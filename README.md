@@ -1,7 +1,10 @@
 # Nether Sensei
 
 Static documentation generator. The more verbose you write your code, the more
-info it will be able to find, inversely requiring less phpDoc blocks.
+info it will be able to find thusly requiring fewer phpDoc blocks. Once you
+finally start writing with all the features of PHP 7.4+, at most you will need
+commenting for us to put your thoughts to words. No more having to tag things
+like argument or return types.
 
 # Requirements
 
