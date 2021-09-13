@@ -1,0 +1,29 @@
+{
+	"name":"netherphp/sensei",
+	"description":"Documentation Generator",
+	"keywords":["php","documentation"],
+	"license":"BSD-2-Clause",
+	"require": {
+		"php":">=8.0",
+		"netherphp/object": "^4.1.4",
+		"netherphp/console": "^4.0"
+	},
+	"require-dev": {
+		"netherphp/standards": ">=0.1.0",
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
+	},
+	"config": {
+		"preferred-install": {
+			"netherphp\/*": "source",
+			"*": "dist"
+		}
+	},
+	"autoload":{
+		"psr-0": {
+			"Nether\\": "src/"
+		}
+	},
+	"bin": [
+		"bin/nsen"
+	]
+}

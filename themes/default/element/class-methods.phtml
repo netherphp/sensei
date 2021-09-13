@@ -1,0 +1,38 @@
+<?php
+
+use Nether\Sensei\Inspectors\MemberInspector;
+
+$GetPrefix = function(MemberInspector $Input) {
+	if($Input->Static)
+	return 'static::';
+
+	return '$this->';
+};
+
+?>
+<div class="mb-6">
+	<div class="font-weight-bold text-uppercase">Methods</div>
+	<hr class="mt-1" />
+
+	<?php foreach($Class->Methods as $Method): ?>
+	<div class="mb-6">
+		<div class="mb-1">
+			<?php if($Method->Static): ?>
+			<span class="Tag Primary">static</span>
+			<?php endif; ?>
+			<span class="Tag Primary"><?php echo $Method->GetAccessWord() ?></span>
+			<span class="Tag Type"><?php echo $Method->Type, PHP_EOL ?></span>
+		</div>
+
+		<h3 class="FontCode">
+			<span class="text-muted"><?php echo $GetPrefix($Method) ?></span><?php echo $Method->GetName() ?>(
+				<?php foreach($Method->Args as $Irg => $Arg): ?>
+				<span class="Tag Type opacity-50"><?php echo $Arg->Type ?></span>
+				<span>$<?php echo $Arg->Name ?></span><?php echo ($Irg !== $Method->Args->Count()-1) ? ',' : '' ?>
+				<?php endforeach; ?>
+			)
+		</h3>
+	</div>
+	<?php endforeach; ?>
+
+</div>

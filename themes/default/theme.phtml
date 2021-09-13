@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+	<title><?php echo $PageTitle ?></title>
+	<link rel="stylesheet" type="text/css" href="<?php echo $Engine->GetAssetURL('share/bootstrap.min.css') ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $Engine->GetAssetURL('share/theme.css') ?>" />
+</head>
+<body>
+
+<header class="mb-4">
+<div class="container pt-4">
+	<div class="p-4 rounded" style="background:#000a;">
+		<h1 class="m-0 p-0 lh-1 text-center">Project Name</h1>
+	</div>
+</div>
+</header>
+
+<?php echo $PageOutput, "\n" ?>
+
+</body>
+</html>

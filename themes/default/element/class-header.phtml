@@ -1,0 +1,20 @@
+<?php
+
+use Nether\Sensei\Util;
+
+$Trail = $Engine->GetNamespaceLinks(Util::GetNamespaceName($Class->Name));
+
+?>
+
+<div class="mb-6">
+	<div class="font-weight-bold text-uppercase">Class</div>
+	<hr class="mt-1" />
+	<?php if(count($Trail)): ?>
+	<div class="mb-2">
+		<?php foreach($Trail as $Link): ?>
+		<span class="text-muted">&gt;</span> <?php echo $Link ?>
+		<?php endforeach; ?>
+	</div>
+	<?php endif; ?>
+	<h2><?php echo $Class->GetName() ?></h2>
+</div>

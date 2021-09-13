@@ -1,0 +1,99 @@
+#!/usr/bin/env php
+<?php
+
+(function(){
+	$Autoloaders = [
+		// seems like a composer package aka normal.
+		sprintf('%s/autoload.php',dirname(__FILE__,4)),
+
+		// seems like we're workin right here on the project.
+		sprintf('%s/vendor/autoload.php',dirname(__FILE__,2))
+	];
+
+	foreach($Autoloaders as $Autoloader)
+	if(file_exists($Autoloader)) {
+		require($Autoloader);
+		break;
+	}
+
+	return;
+})();
+
+(new class extends Nether\Console\Client {
+
+	#[Nether\Console\Meta\Subcommand]
+	public function
+	HandleRun():
+	int {
+
+		$this->HandleCompile();
+		$this->HandleRender();
+
+		return 0;
+	}
+
+	#[Nether\Console\Meta\Subcommand]
+	#[Nether\Console\Meta\SubcommandArg('path')]
+	#[Nether\Console\Meta\Error(1,'No path specified.')]
+	#[Nether\Sensei\Meta\DateAdded('2021-09-12')]
+	public function
+	HandleCompile():
+	int {
+
+		$Path = $this->GetInput(2) ?? NULL;
+		$Outfile = $this->GetOption('out') ?? 'nether-sensei-data.phson';
+
+		if(!$Path)
+		$this->Quit(1);
+
+		////////
+
+		$Codebase = new Nether\Sensei\Codebase;
+
+		foreach(new Nether\Sensei\Indexers\FileIndexer($Path) as $File) {
+			$Code = Nether\Sensei\Indexers\CodeIndexer::FromFile($File);
+			$Codebase->Classes->MergeRight($Code->Classes->GetData());
+		}
+
+		file_put_contents(
+			$Outfile,
+			serialize($Codebase)
+		);
+
+		return 0;
+	}
+
+	#[Nether\Console\Meta\Subcommand]
+	#[Nether\Console\Meta\Error(1,'no input file found')]
+	#[Nether\Sensei\Meta\DateAdded('2021-09-12')]
+	public function
+	HandleRender():
+	int {
+
+		$Root = dirname(__FILE__,2);
+		$Infile = ($this->GetOption('in') ?? "{$Root}/nether-sensei-data.phson");
+		$Outdir = ($this->GetOption('out') ?? "{$Root}/docs");
+
+		if(!file_exists($Infile))
+		$this->Quit(1);
+
+		static::Messages(
+			"Input: {$Infile}",
+			"Output: {$Outdir}"
+		);
+
+		try {
+			$Codebase = unserialize(file_get_contents($Infile));
+			$Codebase->Render($Outdir);
+		}
+
+		catch(Throwable $Err) {
+			echo $Err->GetMessage(), PHP_EOL;
+			return 1;
+		}
+
+		return 0;
+	}
+
+})
+->Run();
