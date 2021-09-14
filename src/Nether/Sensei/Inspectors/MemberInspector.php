@@ -24,6 +24,9 @@ extends Nether\Object\Prototype {
 	public bool
 	$Private = FALSE;
 
+	public bool
+	$Inherited = FALSE;
+
 	public string
 	$Type;
 
@@ -52,10 +55,29 @@ extends Nether\Object\Prototype {
 	string {
 
 		return match(TRUE){
-			$this->Public=> 'public',
-			$this->Protected=> 'protected',
-			$this->Private=> 'private'
+			$this->Public    => 'public',
+			$this->Protected => 'protected',
+			$this->Private   => 'private'
 		};
+	}
+
+	public function
+	GetAccessSortable():
+	string {
+
+		$Sort = match(TRUE){
+			$this->Public    => 1,
+			$this->Protected => 2,
+			$this->Private   => 3
+		};
+
+		if($this->Static)
+		$Sort += 3;
+
+		//if($this->Inherited)
+		//$Sort += 6;
+
+		return $Sort;
 	}
 
 }

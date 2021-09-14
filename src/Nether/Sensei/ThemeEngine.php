@@ -59,7 +59,7 @@ extends Nether\Object\Prototype {
 	Element(string $File, ...$Argv):
 	string {
 
-		$File = $this->Theme->GetPath("{$File}.phtml");
+		$File = $this->Theme->GetPath("element/{$File}.phtml");
 
 		return (
 			function($Engine, $ThemeFile, $Argv){
@@ -101,6 +101,9 @@ extends Nether\Object\Prototype {
 		return $this;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	public function
 	GetAssetURL(string $What):
 	string {
@@ -129,7 +132,7 @@ extends Nether\Object\Prototype {
 	}
 
 	public function
-	GetNamespaceLinks(string $Path, string $Spacer=''):
+	GetNamespaceLinks(string $Path, string $Spacer='', bool $IsClass=TRUE):
 	array {
 
 		$Path = Util::GetNamespaceName($Path);
@@ -142,14 +145,26 @@ extends Nether\Object\Prototype {
 			$Output[] = (sprintf(
 				'%s<a href="%s">%s</a>',
 				$Spacer,
-				$this->GetAssetURL("{$Prev}/{$Part}"),
+				$this->GetAssetURL("{$Prev}/{$Part}/index.html"),
 				$Part
 			));
 
 			$Prev = trim("{$Prev}\\{$Part}",'\\');
 		}
 
+		if($IsClass)
+		$Output[count($Output)-1] = $this->ConvertToClassLink(
+			$Output[count($Output)-1]
+		);
+
 		return $Output;
+	}
+
+	public function
+	ConvertToClassLink(string $NSLink):
+	string {
+
+		return str_replace('/index.html','.class.html',$NSLink);
 	}
 
 	public function

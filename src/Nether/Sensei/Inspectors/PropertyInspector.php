@@ -11,9 +11,12 @@ extends MemberInspector {
 	Inspect():
 	static {
 
-		$Info = new ReflectionProperty(...explode('::',$this->Name));
+		list($Class,$PName) = explode('::',$this->Name);
+
+		$Info = new ReflectionProperty($Class,$PName);
 		$Type = $Info->GetType();
 
+		$this->Inherited = $Info->GetDeclaringClass()->GetName() !== ltrim($Class,'\\');
 		$this->Static = $Info->IsStatic();
 		$this->Public = $Info->IsPublic();
 		$this->Protected = $Info->IsProtected();

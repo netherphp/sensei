@@ -1,5 +1,6 @@
 <?php
 
+use Nether\Sensei\Util;
 use Nether\Sensei\Inspectors\MemberInspector;
 
 $GetPrefix = function(MemberInspector $Input) {
@@ -11,27 +12,40 @@ $GetPrefix = function(MemberInspector $Input) {
 
 ?>
 <div class="mb-6">
-	<div class="font-weight-bold text-uppercase">Methods</div>
-	<hr class="mt-1" />
+	<hr class="m-0" />
+	<div class="font-weight-bold text-uppercase mb-4">Methods</div>
 
 	<?php foreach($Class->Methods as $Method): ?>
-	<div class="mb-6">
-		<div class="mb-1">
-			<?php if($Method->Static): ?>
-			<span class="Tag Primary">static</span>
-			<?php endif; ?>
-			<span class="Tag Primary"><?php echo $Method->GetAccessWord() ?></span>
-			<span class="Tag Type"><?php echo $Method->Type, PHP_EOL ?></span>
-		</div>
+	<div class="mb-4">
+		<div class="jumbotron jumbotron-dark p-4">
+			<div class="mb-1">
+				<?php if($Method->Static): ?>
+				<span class="Tag Primary">static</span>
+				<?php endif; ?>
+				<span class="Tag Primary"><?php echo $Method->GetAccessWord() ?></span>
+				<span class="Tag Type"><?php echo Util::GetNamespaceName($Class->GetMemberType($Method)) ?></span>
+				<?php if($Method->Inherited): ?>
+				<span class="Tag Secondary opacity-50">inherited</span>
+				<?php endif; ?>
+			</div>
 
-		<h3 class="FontCode">
-			<span class="text-muted"><?php echo $GetPrefix($Method) ?></span><?php echo $Method->GetName() ?>(
-				<?php foreach($Method->Args as $Irg => $Arg): ?>
-				<span class="Tag Type opacity-50"><?php echo $Arg->Type ?></span>
-				<span>$<?php echo $Arg->Name ?></span><?php echo ($Irg !== $Method->Args->Count()-1) ? ',' : '' ?>
-				<?php endforeach; ?>
-			)
-		</h3>
+			<h3 class="FontCode m-0 p-0 lh-1">
+				<span class="text-muted"><?php echo $GetPrefix($Method) ?></span><?php echo $Method->GetName() ?>(
+					<?php if($Method->Args->Count()): $MultiLineArg = ($Method->Args->Count() >= 2); ?>
+					<?php if($MultiLineArg): ?><div class="pt-2 pb-2"><?php endif; ?>
+						<?php foreach($Method->Args as $Irg => $Arg): ?>
+						<div class="<?php echo $MultiLineArg ? 'd-block ml-8 pt-2 pb-2' : 'd-inline' ?> font-size-normal">
+							<span class="Tag Type"><?php echo $Arg->Type ?></span>
+							<span>$<?php echo $Arg->Name ?></span><?php echo !$Method->Args->IsLastKey($Irg) ? ',' : '' ?>
+						</div>
+						<?php endforeach; unset($Irg,$Arg); ?>
+					<?php if($MultiLineArg): ?></div><?php endif; ?>
+					<?php else: ?>
+					<span class="opacity-50">void</span>
+					<?php endif; ?>
+				)
+			</h3>
+		</div>
 	</div>
 	<?php endforeach; ?>
 

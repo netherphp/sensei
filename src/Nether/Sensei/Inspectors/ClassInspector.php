@@ -6,6 +6,9 @@ use Nether;
 
 use ReflectionClass;
 use Nether\Object\Datastore;
+use Nether\Sensei\Inspectors\ArgumentInspector;
+use Nether\Sensei\Inspectors\PropertyInspector;
+use Nether\Sensei\Inspectors\MethodInspector;
 
 class ClassInspector
 extends AbstractInspector {
@@ -88,6 +91,16 @@ extends AbstractInspector {
 		return $this->Name;
 	}
 
+	public function
+	GetMemberType(MemberInspector $Member):
+	string {
+
+		if($Member->Type === 'static')
+		return $this->Name;
+
+		return $Member->Type;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -136,6 +149,32 @@ extends AbstractInspector {
 		$this->Methods->Push(new MethodInspector(
 			"{$this->Name}::{$Item->GetName()}"
 		));
+
+		($this->Properties)
+		->Sort(function(PropertyInspector $A, PropertyInspector $B){
+
+			if($A->GetAccessSortable() !== $B->GetAccessSortable())
+			return $A->GetAccessSortable() <=> $B->GetAccessSortable();
+
+			return $A->Name <=> $B->Name;
+		});
+
+		($this->Methods)
+		->Sort(function(MethodInspector $A, MethodInspector $B){
+
+			// alpha __magic methods
+			// alpha public > protected > private
+			// alpha static public > protected > private
+			// pattern repeated, inherited methods.
+
+			if($A->GetAccessSortable() !== $B->GetAccessSortable())
+			return $A->GetAccessSortable() <=> $B->GetAccessSortable();
+
+			if(str_starts_with($A->GetName(),'_') !== str_starts_with($B->GetName(),'_'))
+			return $B->GetName() <=> $A->GetName();
+
+			return $A->GetName() <=> $B->GetName();
+		});
 
 		return $this;
 	}

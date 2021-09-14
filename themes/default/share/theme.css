@@ -1,9 +1,11 @@
 :root {
-	--ColourPrimary: #73d200;
-	--ColourSecondary: #527726;
+	--ColourPrimary: #9ddd4f;
+	--ColourSecondary: #b991d9;
 	--TextLight: #eeeeee;
 	--TextDark: #222222;
 
+	--ColourDark: #222222;
+	--ColourLight: #eeeeee;
 	--ColourGeneric: #c0c0c0;
 	--ColourType: #51b6dd;
 }
@@ -21,8 +23,9 @@ body {
 
 a:link,
 a:visited {
-	color: var(--TextLight);
-	text-decoration: underline;
+	color: var(--ColourPrimary);
+	text-decoration: none;
+	border-bottom: 1px dashed var(--ColourPrimary);
 }
 
 h1 {
@@ -79,6 +82,8 @@ hr {
 .letter-space-lots { letter-spacing: 0.12rem; }
 .letter-space-literally-space { letter-spacing: 0.4rem; }
 
+.jumbotron-dark { background-color: var(--ColourDark); }
+
 .lh-1 { line-height: 1em; }
 
 .m-5 { margin: 2rem !important; }
@@ -93,6 +98,14 @@ hr {
 .mb-7 { margin-bottom: 4rem! important; }
 .mt-8 { margin-top: 5rem! important; }
 .mb-8 { margin-bottom: 5rem! important; }
+.ml-5 { margin-left: 2rem! important; }
+.mr-5 { margin-right: 2rem! important; }
+.ml-6 { margin-left: 3rem! important; }
+.mr-6 { margin-right: 3rem! important; }
+.ml-7 { margin-left: 4rem! important; }
+.mr-7 { margin-right: 4rem! important; }
+.ml-8 { margin-left: 5rem! important; }
+.mr-8 { margin-right: 5rem! important; }
 
 .opacity-0 { opacity: 0.0; }
 .opacity-25 { opacity: 0.25; }
@@ -152,6 +165,11 @@ hr {
 /*******************************************************************************
 **** theme entities ***********************************************************/
 
+.LinkLight a:link,
+.LinkLight a:visited {
+	color: var(--TextLight);
+}
+
 .Tag {
 	border-top: 2px solid var(--ColourGeneric);
 	padding-top: 2px;
@@ -160,6 +178,14 @@ hr {
 .Tag.Primary { border-color: var(--ColourPrimary); }
 .Tag.Secondary { border-color: var(--ColourSecondary); }
 .Tag.Type { border-color: var(--ColourType); }
+
+.TagText {
+	color: var(--ColourGeneric);
+}
+
+.TagText.Primary { color: var(--ColourPrimary); }
+.TagText.Secondary { color: var(--ColourSecondary); }
+.TagText.Type { color: var(--ColourType); }
 
 .FontCode {
 	font-family: 'Fira Code', 'Consolas', monospace;

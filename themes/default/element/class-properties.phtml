@@ -10,22 +10,24 @@ $GetPrefix = function(Nether\Sensei\Inspectors\PropertyInspector $Input) {
 
 ?>
 <div class="mb-6">
-	<div class="font-weight-bold text-uppercase">Properties</div>
-	<hr class="mt-1" />
+	<hr class="m-0" />
+	<div class="font-weight-bold text-uppercase mb-4">Properties</div>
 
 	<?php foreach($Class->Properties as $Prop): ?>
-	<div class="mb-6">
-		<div class="mb-1">
-			<?php if($Prop->Static): ?>
-			<span class="Tag Primary">static</span>
-			<?php endif; ?>
-			<span class="Tag Primary"><?php echo $Prop->GetAccessWord() ?></span>
-			<span class="Tag Type"><?php echo $Prop->Type, PHP_EOL ?></span>
-		</div>
+	<div class="mb-4">
+		<div class="jumbotron jumbotron-dark p-4">
+			<div class="mb-1">
+				<?php if($Prop->Static): ?>
+				<span class="Tag Primary">static</span>
+				<?php endif; ?>
+				<span class="Tag Primary"><?php echo $Prop->GetAccessWord() ?></span>
+				<span class="Tag Type"><?php echo $Prop->Type, PHP_EOL ?></span>
+			</div>
 
-		<h3 class="FontCode">
-			<span class="text-muted"><?php echo $GetPrefix($Prop) ?></span><?php echo $Prop->GetName() ?>
-		</h3>
+			<h3 class="FontCode m-0 p-0 lh-1">
+				<span class="text-muted"><?php echo $GetPrefix($Prop) ?></span><?php echo $Prop->GetName() ?>
+			</h3>
+		</div>
 	</div>
 	<?php endforeach; ?>
 

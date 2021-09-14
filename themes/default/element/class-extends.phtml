@@ -9,22 +9,24 @@ $Main = array_pop($Trail);
 ?>
 
 <div class="mb-6">
-	<div class="font-weight-bold text-uppercase">Extends</div>
-	<hr class="mt-1" />
+	<hr class="m-0" />
+	<div class="font-weight-bold text-uppercase mb-4">Extends</div>
 
-	<?php if($Foreign): ?>
-	<div class="mb-1">
-		<span class="Tag">foreign</span>
+	<div class="jumbotron jumbotron-dark p-4">
+		<?php if($Foreign): ?>
+		<div class="mb-1">
+			<span class="Tag">foreign</span>
+		</div>
+		<h3 class="m-0 p-0 lh-1"><?php echo Util::GetNamespaceName($Class->Extends) ?></h3>
+		<?php else: ?>
+		<?php if(count($Trail)): ?>
+		<div class="mb-2">
+			<?php foreach($Trail as $Link): ?>
+			<span class="text-muted">&gt;</span> <?php echo $Link ?>
+			<?php endforeach; ?>
+		</div>
+		<?php endif; ?>
+		<h3 class="LinkLight m-0 p-0 lh-1"><?php echo $Main ?></h3>
+		<?php endif; ?>
 	</div>
-	<h2><?php echo Util::GetNamespaceName($Class->Extends) ?></h2>
-	<?php else: ?>
-	<?php if(count($Trail)): ?>
-	<div class="mb-2">
-		<?php foreach($Trail as $Link): ?>
-		<span class="text-muted">&gt;</span> <?php echo $Link ?>
-		<?php endforeach; ?>
-	</div>
-	<?php endif; ?>
-	<h2><?php echo $Main ?></h2>
-	<?php endif; ?>
 </div>

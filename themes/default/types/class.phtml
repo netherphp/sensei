@@ -12,31 +12,6 @@ use Nether\Sensei\Inspectors\PropertyInspector;
 
 $Engine->Set('PageTitle',"{$Class->GetClassName()} (Class)");
 
-////////////////////////////////////////////////////////////////////////////////
-// this sorting needs to be done at compile time ///////////////////////////////
-
-$Class->Properties->Sort(function(PropertyInspector $A, PropertyInspector $B){
-
-	if($A->Static !== $B->Static)
-	return $A->Static <=> $B->Static;
-
-	return $A->Name <=> $B->Name;
-});
-
-$Class->Methods->Sort(function(MethodInspector $A, MethodInspector $B){
-
-	if(str_starts_with($A->Name,'_') && !str_starts_with($B->Name,'_'))
-	return 1;
-
-	if(!str_starts_with($A->Name,'_') && str_starts_with($B->Name,'_'))
-	return -1;
-
-	if($A->Static !== $B->Static)
-	return $A->Static <=> $B->Static;
-
-	return $A->Name <=> $B->Name;
-});
-
 ?>
 
 <div class="container">
@@ -44,53 +19,47 @@ $Class->Methods->Sort(function(MethodInspector $A, MethodInspector $B){
 	<?php
 
 	echo $Engine->Element(
-		'element/class-header',
+		'class-header',
 		Class: $Class,
 		Codebase: $Codebase
 	);
 
 	if($Class->Extends)
 	echo $Engine->Element(
-		'element/class-extends',
+		'class-extends',
 		Class: $Class,
 		Codebase: $Codebase
 	);
 
 	if($Class->Interfaces->Count())
 	echo $Engine->Element(
-		'element/class-interfaces',
+		'class-interfaces',
+		Class: $Class,
+		Codebase: $Codebase
+	);
+
+	if($Class->Constants->Count())
+	echo $Engine->Element(
+		'class-constants',
 		Class: $Class,
 		Codebase: $Codebase
 	);
 
 	if($Class->Properties->Count())
 	echo $Engine->Element(
-		'element/class-properties',
+		'class-properties',
 		Class: $Class,
 		Codebase: $Codebase
 	);
 
 	if($Class->Methods->Count())
 	echo $Engine->Element(
-		'element/class-methods',
+		'class-methods',
 		Class: $Class,
 		Codebase: $Codebase
 	);
 
 	?>
 
-<?php if($Class->Constants->Count()): ?>
-	<div class="mb-4 pb-4">
-		<div class="font-weight-bold text-uppercase">Constants</div>
-		<hr class="mt-1" />
-<?php foreach($Class->Constants as $Item): ?>
-		<div class="badge badge-primary"><?php echo $Item->GetAccessWord(), PHP_EOL ?></div>
-		<div class="badge badge-primary"><?php echo $Item->Type, PHP_EOL ?></div>
-		<h3 class="FontCode">
-			<span class="text-muted">static::</span><?php echo $Item->GetName() ?>
-		</h3>
-<?php endforeach; ?>
-	</div>
-<?php endif; ?>
 
 </div>

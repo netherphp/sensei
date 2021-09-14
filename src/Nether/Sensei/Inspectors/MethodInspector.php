@@ -27,10 +27,13 @@ extends MemberInspector {
 	Inspect():
 	static {
 
-		$Info = new ReflectionMethod(...explode('::',$this->Name));
+		list($Class,$PName) = explode('::',$this->Name);
+
+		$Info = new ReflectionMethod($Class,$PName);
 		$Return = $Info->GetReturnType();
 		$Arg = NULL;
 
+		$this->Inherited = $Info->GetDeclaringClass()->GetName() !== ltrim($Class,'\\');
 		$this->Final = $Info->IsFinal();
 		$this->Abstract = $Info->IsAbstract();
 		$this->Static = $Info->IsStatic();

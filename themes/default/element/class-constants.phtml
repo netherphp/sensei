@@ -1,0 +1,26 @@
+<?php
+
+?>
+<div class="mb-6">
+	<hr class="m-0" />
+	<div class="font-weight-bold text-uppercase mb-4">Constants</div>
+
+	<?php foreach($Class->Constants as $Const): ?>
+	<div class="mb-4">
+		<div class="jumbotron jumbotron-dark p-4">
+			<div class="mb-1">
+				<?php if($Const->Static): ?>
+				<span class="Tag Primary">static</span>
+				<?php endif; ?>
+				<span class="Tag Primary"><?php echo $Const->GetAccessWord() ?></span>
+				<span class="Tag Type"><?php echo $Const->Type, PHP_EOL ?></span>
+			</div>
+
+			<h3 class="FontCode m-0 p-0 lh-1">
+				<span class="text-muted">static::</span><?php echo $Const->GetName() ?>
+			</h3>
+		</div>
+	</div>
+	<?php endforeach; ?>
+
+</div>
