@@ -151,6 +151,14 @@ extends Nether\Object\Prototype {
 			if($this->Tokens[$C]->text === ':')
 			return FALSE;
 
+			// probably ::class, as an argument.
+			if($this->Tokens[$C]->text === ',')
+			return FALSE;
+
+			// probably ::class) as an arugment.
+			if($this->Tokens[$C]->text === ')')
+			return FALSE;
+
 		return TRUE;
 	}
 

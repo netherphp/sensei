@@ -22,8 +22,16 @@ $Engine->Set('PageTitle',"{$Namespace->Name} (Namespace)");
 		Codebase: $Codebase
 	);
 
+	if($Namespace->Classes->Count())
 	echo $Engine->Element(
 		'namespace-classes',
+		Namespace: $Namespace,
+		Codebase: $Codebase
+	);
+
+	//if($Namespace->Classes->Count())
+	echo $Engine->Element(
+		'namespace-namespaces',
 		Namespace: $Namespace,
 		Codebase: $Codebase
 	);

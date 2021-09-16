@@ -8,6 +8,7 @@
 	--ColourLight: #eeeeee;
 	--ColourGeneric: #c0c0c0;
 	--ColourType: #51b6dd;
+	--ColourClass: #bf5757;
 }
 
 * {
@@ -19,6 +20,11 @@ body {
 	font-family: 'Fira Code', 'Consolas', monospace;
 	letter-spacing: 0.02em;
 	min-height: 100vh;
+}
+
+blockquote {
+	border-left: 3px solid var(--ColourGeneric);
+	padding-left: 20px;
 }
 
 a:link,
@@ -170,6 +176,10 @@ hr {
 	color: var(--TextLight);
 }
 
+.HideTheLastHr hr:last-of-type {
+	display: none;
+}
+
 .Tag {
 	border-top: 2px solid var(--ColourGeneric);
 	padding-top: 2px;
@@ -178,6 +188,7 @@ hr {
 .Tag.Primary { border-color: var(--ColourPrimary); }
 .Tag.Secondary { border-color: var(--ColourSecondary); }
 .Tag.Type { border-color: var(--ColourType); }
+.Tag.Class { border-color: var(--ColourClass); }
 
 .TagText {
 	color: var(--ColourGeneric);
@@ -189,9 +200,4 @@ hr {
 
 .FontCode {
 	font-family: 'Fira Code', 'Consolas', monospace;
-}
-
-.ClassNamespaceBar {
-	background: var(--ColourPrimary);
-	color: var(--TextLight);
 }

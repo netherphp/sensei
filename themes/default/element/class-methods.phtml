@@ -20,7 +20,7 @@ $GetPrefix = function(MemberInspector $Input) {
 		<div class="jumbotron jumbotron-dark p-4">
 			<div class="mb-1">
 				<?php if($Method->Static): ?>
-				<span class="Tag Primary">static</span>
+				<span class="Tag Class">static</span>
 				<?php endif; ?>
 				<span class="Tag Primary"><?php echo $Method->GetAccessWord() ?></span>
 				<span class="Tag Type"><?php echo Util::GetNamespaceName($Class->GetMemberType($Method)) ?></span>

@@ -17,6 +17,10 @@ extends Nether\Object\Prototype {
 
 	#[Nether\Object\Meta\PropertyObjectify]
 	public Datastore
+	$Namespaces;
+
+	#[Nether\Object\Meta\PropertyObjectify]
+	public Datastore
 	$Classes;
 
 	#[Nether\Object\Meta\PropertyObjectify]

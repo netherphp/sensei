@@ -18,6 +18,8 @@ $Render = function() use($Root) {
 		}
 	}
 
+	$RenderCmd = sprintf('php %s/bin/nsen render',$Root);
+
 	if(!$RenderCmd)
 	return TRUE;
 

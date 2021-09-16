@@ -12,9 +12,9 @@ $Main = array_pop($Trail);
 		<div class="mb-1">
 			<span class="Tag Primary">namespace</span>
 		</div>
-		<h2 class="m-0 mb-2 p-0 lh-1"><?php echo $Namespace->GetName() ?></h2>
+		<h2 class="m-0 p-0 lh-1"><?php echo $Namespace->GetName() ?></h2>
 		<?php if(count($Trail)): ?>
-		<div class="mb-0">
+		<div class="mt-2 mb-0">
 			<?php foreach($Trail as $Link): ?>
 			<span class="text-muted">&gt;</span> <?php echo $Link ?>
 			<?php endforeach; ?>

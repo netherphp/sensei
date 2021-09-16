@@ -3,6 +3,7 @@
 namespace Nether\Sensei\Inspectors;
 
 use Nether;
+use Nether\Sensei\Meta;
 
 use Exception;
 use ReflectionClass;
@@ -30,6 +31,9 @@ extends AbstractInspector {
 
 	public ?string
 	$Extends = NULL;
+
+	public ?Nether\Sensei\Meta\Info
+	$Info = NULL;
 
 	#[Nether\Object\Meta\PropertyObjectify]
 	public Datastore
@@ -118,7 +122,7 @@ extends AbstractInspector {
 	static {
 
 		if(!class_exists($this->Name))
-		throw new Exception('test');
+		throw new Exception("{$this->Name}");
 
 		////////
 
@@ -130,6 +134,9 @@ extends AbstractInspector {
 		$this->Final = $Class->IsFinal();
 		$this->Attribute = count($Class->GetAttributes('Attribute')) > 0;
 		$this->Extends = $Extends ? "\\{$Extends->GetName()}" : NULL;
+
+		foreach($Class->GetAttributes(Meta\Info::class) as $Item)
+		$this->Info = $Item->NewInstance();
 
 		foreach($Class->GetInterfaces() as $Item)
 		$this->Interfaces->Push(

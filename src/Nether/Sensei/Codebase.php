@@ -3,19 +3,17 @@
 namespace Nether\Sensei;
 
 use Nether;
+use Nether\Sensei\Meta;
 
 use JsonSerializable;
 use Nether\Sensei\Inspectors\NamespaceInspector;
 use Nether\Sensei\Inspectors\ClassInspector;
 use Nether\Object\Datastore;
 
+#[Meta\Info('Describes the entire codebase that was scanned.')]
 class Codebase
 extends Nether\Object\Prototype
 implements JsonSerializable {
-
-	const
-	SourceFresh = 1,
-	SourceCache = 2;
 
 	#[Nether\Object\Meta\PropertyObjectify]
 	public Nether\Object\Datastore
@@ -181,7 +179,7 @@ implements JsonSerializable {
 			if(!isset($Data[$Key]))
 			$Data[$Key] = new NamespaceInspector($Key);
 
-			$Data[$Key]->Classes->Push($Class,$Class->Name);
+			$Data[$Key]->Classes->Push($Class, $Class->Name);
 		}
 
 		// notice any namespaces that existed but contained nothing
@@ -195,7 +193,7 @@ implements JsonSerializable {
 		$NSK = NULL; // string(Namespace full generated path)
 
 		foreach($Data as $Key => $NS) {
-			$NSE = explode('\\',Util::GetNamespaceName($NS->Name));
+			$NSE = explode('\\', Util::GetNamespaceName($NS->Name));
 			$NSP = '';
 
 			foreach($NSE as $NSS) {
@@ -214,6 +212,26 @@ implements JsonSerializable {
 			fn(NamespaceInspector $A, NamespaceInspector $B)
 			=> ($A->Name <=> $B->Name)
 		);
+
+		// notice the namespaces about their structures. nesting the direct
+		// children into eachother.
+
+		foreach($this->Namespaces as $NS) {
+			foreach($this->Namespaces as $NSS) {
+				if(str_starts_with($NSS->Name, $NS->Name)) {
+					$NSP = ltrim(preg_replace(
+						sprintf('/^%s/',preg_quote($NS->Name, '/')),
+						'',
+						$NSS->Name
+					),'\\');
+
+					if($NSP && !str_contains($NSP,'\\')) {
+						echo "parking {$NSS->Name} in {$NS->Name}", PHP_EOL;
+						$NS->Namespaces->Shove($NSS->Name, $NSS);
+					}
+				}
+			}
+		}
 
 		return $this;
 	}

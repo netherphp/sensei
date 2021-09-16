@@ -2,6 +2,12 @@
 
 use Nether\Sensei\Util;
 
+/**
+ * @var Nether\Sensei\ThemeEngine $Engine
+ * @var Nether\Sensei\Codebase $Codebase
+ * @var Nether\Sensei\Inspectors\ClassInspector $Class
+ */
+
 $Trail = $Engine->GetNamespaceLinks(Util::GetNamespaceName($Class->Name));
 $Main = array_pop($Trail);
 
@@ -25,6 +31,12 @@ $Main = array_pop($Trail);
 			<span class="text-muted">&gt;</span> <?php echo $Link ?>
 			<?php endforeach; ?>
 		</div>
+		<?php endif; ?>
+
+		<?php if($Class->Info): ?>
+		<blockquote class="mt-3 mb-0 opacity-50">
+			<?php echo htmlentities($Class->Info->Text) ?>
+		</blockquote>
 		<?php endif; ?>
 	</div>
 </div>
