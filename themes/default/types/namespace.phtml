@@ -5,15 +5,29 @@ use Nether\Sensei\Util;
 /**
  * @var Nether\Sensei\ThemeEngine $Engine
  * @var Nether\Sensei\Codebase $Codebase
- * @var string $Namespace
+ * @var Nether\Sensei\Inspectors\NamespaceInspector $Namespace
  */
 
-$Engine->Set('PageTitle',"{$Namespace} (Namespace)");
+$Engine->Set('PageTitle',"{$Namespace->Name} (Namespace)");
 
 ?>
 
 <div class="container">
 
+	<?php
 
+	echo $Engine->Element(
+		'namespace-header',
+		Namespace: $Namespace,
+		Codebase: $Codebase
+	);
+
+	echo $Engine->Element(
+		'namespace-classes',
+		Namespace: $Namespace,
+		Codebase: $Codebase
+	);
+
+	?>
 
 </div>

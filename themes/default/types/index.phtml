@@ -13,6 +13,18 @@ $Engine->Set('PageTitle',"Project Name");
 
 <div class="container">
 
+	<?php
 
+	echo $Engine->Element(
+		'index-namespaces',
+		Codebase: $Codebase
+	);
+
+	echo $Engine->Element(
+		'index-classes',
+		Codebase: $Codebase
+	);
+
+	?>
 
 </div>

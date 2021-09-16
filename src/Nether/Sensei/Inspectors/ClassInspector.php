@@ -4,9 +4,9 @@ namespace Nether\Sensei\Inspectors;
 
 use Nether;
 
+use Exception;
 use ReflectionClass;
 use Nether\Object\Datastore;
-use Nether\Sensei\Inspectors\ArgumentInspector;
 use Nether\Sensei\Inspectors\PropertyInspector;
 use Nether\Sensei\Inspectors\MethodInspector;
 
@@ -117,7 +117,8 @@ extends AbstractInspector {
 	Inspect():
 	static {
 
-		class_exists($this->Name);
+		if(!class_exists($this->Name))
+		throw new Exception('test');
 
 		////////
 

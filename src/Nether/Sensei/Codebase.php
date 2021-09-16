@@ -5,6 +5,7 @@ namespace Nether\Sensei;
 use Nether;
 
 use JsonSerializable;
+use Nether\Sensei\Inspectors\NamespaceInspector;
 use Nether\Sensei\Inspectors\ClassInspector;
 use Nether\Object\Datastore;
 
@@ -15,6 +16,10 @@ implements JsonSerializable {
 	const
 	SourceFresh = 1,
 	SourceCache = 2;
+
+	#[Nether\Object\Meta\PropertyObjectify]
+	public Nether\Object\Datastore
+	$Namespaces;
 
 	#[Nether\Object\Meta\PropertyObjectify]
 	public Nether\Object\Datastore
@@ -77,7 +82,7 @@ implements JsonSerializable {
 
 		$Outfile = join(
 			DIRECTORY_SEPARATOR,
-			[ $Dir, "index.phtml" ]
+			[ $Dir, "index.html" ]
 		);
 
 		(new ThemeEngine($Theme))
@@ -95,17 +100,16 @@ implements JsonSerializable {
 	RenderNamespaces(Theme $Theme, string $Dir):
 	static {
 
-		$Namespaces = $this->BakeNamespaces();
 		$NS = NULL;
 
-		foreach($Namespaces as $NS) {
+		foreach($this->Namespaces as $NS) {
 			$Outfile = join(
 				DIRECTORY_SEPARATOR,
-				[ $Dir, Util::GetNamespaceName("{$NS}/index.html") ]
+				[ $Dir, Util::GetNamespaceName("{$NS->Name}/index.html") ]
 			);
 
 			(new ThemeEngine($Theme))
-			->Set('PageDepth',(substr_count($NS,'\\')+1))
+			->Set('PageDepth',(substr_count($NS->Name,'\\')+1))
 			->Area(
 				"types/namespace",
 				Namespace: $NS,
@@ -148,19 +152,70 @@ implements JsonSerializable {
 	////////////////////////////////////////////////////////////////
 
 	public function
+	BakeClasses(Datastore $Classes):
+	static{
+
+		($this->Classes)
+		->MergeRight($Classes->GetData());
+
+		return $this;
+	}
+
+	public function
 	BakeNamespaces():
-	Datastore {
+	static {
+
+		// note: namespaces are not really real in php so baking the
+		// namespaces must be done after baking other real things like
+		// classes, traits, and interfaces.
 
 		$Data = [];
 		$Class = NULL;
+		$Key = NULL;
 
-		foreach($this->Classes as $Class)
-		$Data["\\{$Class->GetNamespaceName()}"] = TRUE;
+		// notice the namespaces the classes live in.
 
-		$Output = new Datastore(array_keys($Data));
-		$Output->Sort(fn($A,$B)=> ($A <=> $B));
+		foreach($this->Classes as $Class) {
+			$Key = "\\{$Class->GetNamespaceName()}";
 
-		return $Output;
+			if(!isset($Data[$Key]))
+			$Data[$Key] = new NamespaceInspector($Key);
+
+			$Data[$Key]->Classes->Push($Class,$Class->Name);
+		}
+
+		// notice any namespaces that existed but contained nothing
+		// within them to cause them to be indexed. like your top level
+		// vendor namespace.
+
+		$NS = NULL;  // NamespaceInspector
+		$NSE = NULL; // array(Namespace Name Exploded)
+		$NSS = NULL; // string(Namespace basename)
+		$NSP = '';   // string(Namespace build path)
+		$NSK = NULL; // string(Namespace full generated path)
+
+		foreach($Data as $Key => $NS) {
+			$NSE = explode('\\',Util::GetNamespaceName($NS->Name));
+			$NSP = '';
+
+			foreach($NSE as $NSS) {
+				$NSK = "{$NSP}\\{$NSS}";
+
+				if(!isset($Data[$NSK]))
+				$Data[$NSK] = new NamespaceInspector($NSK);
+
+				$NSP .= "\\{$NSS}";
+			}
+		}
+
+		($this->Namespaces)
+		->SetData($Data)
+		->Sort(
+			fn(NamespaceInspector $A, NamespaceInspector $B)
+			=> ($A->Name <=> $B->Name)
+		);
+
+		return $this;
 	}
 
 }

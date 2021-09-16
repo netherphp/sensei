@@ -95,7 +95,7 @@ extends Nether\Object\Prototype {
 			}
 		)($this, $this->Theme->GetPath('theme.phtml'), $this->Data);
 
-		echo "Writing: {$Outfile}", PHP_EOL;
+		//echo "Writing: {$Outfile}", PHP_EOL;
 
 		file_put_contents($Outfile,$Render);
 		return $this;

@@ -1,0 +1,31 @@
+<?php
+
+use Nether\Sensei\Util;
+
+/**
+ * @var Nether\Sensei\ThemeEngine $Engine
+ * @var Nether\Sensei\Codebase $Codebase
+ */
+
+$IsForeign = function($Input) use($Codebase) {
+	return $Codebase->Namespaces->HasKey($Input) === FALSE;
+};
+
+?>
+
+<div class="mb-6">
+	<hr class="m-0" />
+	<div class="font-weight-bold text-uppercase mb-4">Namespaces</div>
+
+	<div class="jumbotron jumbotron-dark p-4">
+		<?php foreach($Codebase->Namespaces as $NKey => $Namespace): ?>
+		<div class="<?php echo $Codebase->Namespaces->IsLastKey($NKey) ? 'mb-0' : 'mb-4' ?>">
+			<div class="FontCode m-0 p-0 lh-1">
+				<?php foreach($Engine->GetNamespaceLinks(Util::GetNamespaceName($Namespace->Name), IsClass: FALSE) as $Link): ?>
+				<span class="text-muted">&gt;</span> <?php echo $Link ?>
+				<?php endforeach; ?>
+			</div>
+		</div>
+		<?php endforeach; ?>
+	</div>
+</div>

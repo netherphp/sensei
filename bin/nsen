@@ -52,8 +52,10 @@
 
 		foreach(new Nether\Sensei\Indexers\FileIndexer($Path) as $File) {
 			$Code = Nether\Sensei\Indexers\CodeIndexer::FromFile($File);
-			$Codebase->Classes->MergeRight($Code->Classes->GetData());
+			$Codebase->BakeClasses($Code->Classes);
 		}
+
+		$Codebase->BakeNamespaces();
 
 		file_put_contents(
 			$Outfile,
@@ -88,6 +90,7 @@
 		}
 
 		catch(Throwable $Err) {
+			throw $Err;
 			echo $Err->GetMessage(), PHP_EOL;
 			return 1;
 		}
