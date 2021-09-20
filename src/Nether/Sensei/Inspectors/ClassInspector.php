@@ -8,14 +8,15 @@ use Nether\Sensei\Meta;
 use Exception;
 use ReflectionClass;
 use Nether\Object\Datastore;
-use Nether\Sensei\Inspectors\PropertyInspector;
-use Nether\Sensei\Inspectors\MethodInspector;
 
 class ClassInspector
 extends AbstractInspector {
 
 	public string
 	$InspectorType = 'class';
+
+	public string
+	$FileExt = '.class.html';
 
 	public string
 	$Name;
@@ -31,9 +32,6 @@ extends AbstractInspector {
 
 	public ?string
 	$Extends = NULL;
-
-	public ?Nether\Sensei\Meta\Info
-	$Info = NULL;
 
 	#[Nether\Object\Meta\PropertyObjectify]
 	public Datastore
@@ -62,6 +60,13 @@ extends AbstractInspector {
 		$this->Inspect();
 
 		return;
+	}
+
+	public function
+	GetFullName():
+	string {
+
+		return ltrim($this->Name,'\\');
 	}
 
 	public function
@@ -99,10 +104,29 @@ extends AbstractInspector {
 	GetMemberType(MemberInspector $Member):
 	string {
 
-		if($Member->Type === 'static')
-		return $this->Name;
+		return match($Member->Type) {
+			'static' => $this->GetName(),
+			'self'   => $this->GetName(),
+			default  => $Member->Type
+		};
+	}
 
-		return $Member->Type;
+	public function
+	GetArgumentType(ArgumentInspector $Arg):
+	string {
+
+		if(!str_contains($Arg->Type,'\\'))
+		return $Arg->Type;
+
+		$Bits = explode('\\',$Arg->Type);
+		array_pop($Bits);
+
+		$Namespace = join('\\',$Bits);
+
+		if(str_starts_with($this->GetNamespaceName(),$Namespace))
+		return str_replace("{$Namespace}\\",'',$Arg->Type);
+
+		return $Arg->Type;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -145,17 +169,20 @@ extends AbstractInspector {
 
 		foreach($Class->GetReflectionConstants() as $Item)
 		$this->Constants->Push(new ConstantInspector(
-			"{$this->Name}::{$Item->GetName()}"
+			"{$this->Name}::{$Item->GetName()}",
+			$this
 		));
 
 		foreach($Class->GetProperties() as $Item)
 		$this->Properties->Push(new PropertyInspector(
-			"{$this->Name}::{$Item->GetName()}"
+			"{$this->Name}::{$Item->GetName()}",
+			$this
 		));
 
 		foreach($Class->GetMethods() as $Item)
 		$this->Methods->Push(new MethodInspector(
-			"{$this->Name}::{$Item->GetName()}"
+			"{$this->Name}::{$Item->GetName()}",
+			$this
 		));
 
 		($this->Properties)

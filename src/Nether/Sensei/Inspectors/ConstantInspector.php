@@ -7,18 +7,8 @@ use ReflectionClassConstant;
 class ConstantInspector
 extends MemberInspector {
 
-	public function
-	GetName():
-	string {
-
-		if(str_contains($this->Name,'::'))
-		return explode('::',$this->Name)[1];
-
-		return $this->Name;
-	}
-
 	protected function
-	Inspect():
+	Inspect(ClassInspector $Class):
 	static {
 
 		$Info = new ReflectionClassConstant(...explode('::',$this->Name));

@@ -22,7 +22,11 @@ $Main = array_pop($Trail);
 			<?php if($Class->Final): ?>
 			<span class="Tag Primary">final</span>
 			<?php endif; ?>
+			<?php if($Class->Attribute): ?>
+			<span class="Tag Primary">attribute</span>
+			<?php else: ?>
 			<span class="Tag Primary">class</span>
+			<?php endif; ?>
 		</div>
 		<h2 class="m-0 mb-2 p-0 lh-1"><?php echo $Class->GetName() ?></h2>
 		<?php if(count($Trail)): ?>

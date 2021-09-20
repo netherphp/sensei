@@ -3,19 +3,18 @@
 use Nether\Sensei\Util;
 use Nether\Sensei\Inspectors\MemberInspector;
 
-$GetPrefix = function(MemberInspector $Input) {
-	if($Input->Static)
-	return 'static::';
-
-	return '$this->';
-};
+/**
+ * @var Nether\Sensei\ThemeEngine $Engine
+ * @var Nether\Sensei\Codebase $Codebase
+ * @var Nether\Sensei\Inspectors\ClassInspector $Class
+ */
 
 ?>
 <div class="mb-6">
 	<hr class="m-0" />
 	<div class="font-weight-bold text-uppercase mb-4">Methods</div>
 
-	<?php foreach($Class->Methods as $Method): ?>
+	<?php foreach($Class->Methods as $Method): /** @var Nether\Sensei\Inspectors\MethodInspector $Method */ ?>
 	<div class="mb-4">
 		<div class="jumbotron jumbotron-dark p-4">
 			<div class="mb-1">
@@ -24,18 +23,22 @@ $GetPrefix = function(MemberInspector $Input) {
 				<?php endif; ?>
 				<span class="Tag Primary"><?php echo $Method->GetAccessWord() ?></span>
 				<span class="Tag Type"><?php echo Util::GetNamespaceName($Class->GetMemberType($Method)) ?></span>
-				<?php if($Method->Inherited): ?>
+				<?php if($Method->IsInherited()): ?>
 				<span class="Tag Secondary opacity-50">inherited</span>
 				<?php endif; ?>
 			</div>
 
-			<h3 class="FontCode m-0 p-0 lh-1">
-				<span class="text-muted"><?php echo $GetPrefix($Method) ?></span><?php echo $Method->GetName() ?>(
+			<h3 id="<?php echo "Method_{$Method->GetName()}" ?>" class="FontCode m-0 p-0 lh-1">
+				<span class="text-muted"><?php echo $Method->GetCallBase(), $Method->GetCallDelim() ?></span><?php echo $Method->GetName() ?>(
 					<?php if($Method->Args->Count()): $MultiLineArg = ($Method->Args->Count() >= 2); ?>
 					<?php if($MultiLineArg): ?><div class="pt-2 pb-2"><?php endif; ?>
 						<?php foreach($Method->Args as $Irg => $Arg): ?>
 						<div class="<?php echo $MultiLineArg ? 'd-block ml-8 pt-2 pb-2' : 'd-inline' ?> font-size-normal">
-							<span class="Tag Type"><?php echo $Arg->Type ?></span>
+							<?php if($Codebase->HasClasslike("\\{$Arg->Type}")): ?>
+							<span class="Tag Type"><a href="<?php echo $Codebase->GetClasslike("\\{$Arg->Type}")->GetFinalURI() ?>"><?php echo $Class->GetArgumentType($Arg) ?></a></span>
+							<?php else: ?>
+							<span class="Tag Type"><?php echo $Class->GetArgumentType($Arg) ?></span>
+							<?php endif; ?>
 							<span>$<?php echo $Arg->Name ?></span><?php echo !$Method->Args->IsLastKey($Irg) ? ',' : '' ?>
 						</div>
 						<?php endforeach; unset($Irg,$Arg); ?>
@@ -45,6 +48,31 @@ $GetPrefix = function(MemberInspector $Input) {
 					<?php endif; ?>
 				)
 			</h3>
+			<?php if($Method->Override && $Method->IsDefinedHere()): ?>
+			<div class="mt-1 text-muted font-italic LinkLight">
+				overrides
+				<?php if($Origin = $Codebase->GetClasslike($Method->Override)): /** @var Nether\Sensei\Inspectors\ClassInspector $Origin */ ?>
+				<a href="<?php echo $Engine->GetAssetURL($Origin->GetFinalURI()) ?>"><?php echo $Origin->GetFullName() ?></a><?php echo $Method->GetCallDelim() ?><a href="<?php echo $Engine->GetAssetURL($Origin->GetFinalURI("Method_{$Method->GetName()}")) ?>"><?php echo $Method->GetName() ?>()</a>
+				<?php else: ?>
+				<?php echo $Method->GetCallMock(TRUE) ?>()
+				<?php endif; ?>
+			</div>
+			<?php endif; ?>
+			<?php if($Method->Implement): ?>
+			<div class="mt-1 text-muted font-italic">
+				implements
+				<?php if($Origin = $Codebase->GetClasslike($Method->Implement)): /** @var Nether\Sensei\Inspectors\ClassInspector $Origin */ ?>
+				<a href="<?php echo $Engine->GetAssetURL($Origin->GetFinalURI()) ?>"><?php echo $Origin->GetFullName() ?></a><?php echo $Method->GetCallDelim() ?><a href="<?php echo $Engine->GetAssetURL($Origin->GetFinalURI("Method_{$Method->GetName()}")) ?>"><?php echo $Method->GetName() ?>()</a>
+				<?php else: ?>
+				<?php echo $Method->GetCallMock(TRUE) ?>()
+				<?php endif; ?>
+			</div>
+			<?php endif; ?>
+			<?php if($Method->Info): ?>
+			<blockquote class="mt-3 mb-0 opacity-50">
+				<?php echo htmlentities($Method->Info->Text) ?>
+			</blockquote>
+			<?php endif; ?>
 		</div>
 	</div>
 	<?php endforeach; ?>

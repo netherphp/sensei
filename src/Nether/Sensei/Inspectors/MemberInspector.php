@@ -4,10 +4,11 @@ namespace Nether\Sensei\Inspectors;
 
 use Nether;
 
-use ReflectionProperty;
+use Nether\Sensei\Inspectors\ClassInspector;
+use Nether\Sensei\Util;
 
 class MemberInspector
-extends Nether\Object\Prototype {
+extends AbstractInspector {
 
 	public string
 	$Name;
@@ -24,31 +25,40 @@ extends Nether\Object\Prototype {
 	public bool
 	$Private = FALSE;
 
-	public bool
-	$Inherited = FALSE;
-
 	public string
 	$Type;
+
+	public ?string
+	$Inherited = NULL;
+
+	public ?string
+	$Implement = NULL;
+
+	public ?string
+	$Override = NULL;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
 	public function
-	__Construct(string $Name) {
+	__Construct(string $Name, ClassInspector $Class) {
 		parent::__Construct();
 
 		$this->Name = $Name;
 
-		$this->Inspect();
+		$this->Inspect($Class);
 		return;
 	}
 
 	protected function
-	Inspect():
+	Inspect(ClassInspector $Class):
 	static {
 
 		return $this;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	GetAccessWord():
@@ -78,6 +88,81 @@ extends Nether\Object\Prototype {
 		//$Sort += 6;
 
 		return $Sort;
+	}
+
+	public function
+	GetCallBase(bool $Verbose=FALSE):
+	string {
+
+		if($Verbose) {
+			if($this->Implement)
+			return Util::GetNamespaceName($this->Implement);
+
+			if($this->Override)
+			return Util::GetNamespaceName($this->Override);
+		}
+
+		if($this->Static)
+		return 'static';
+
+		return '$this';
+	}
+
+	public function
+	GetCallDelim():
+	string {
+
+		if($this->Static)
+		return '::';
+
+		return '->';
+	}
+
+	public function
+	GetCallMock(bool $Verbose=FALSE):
+	string {
+
+		return sprintf(
+			'%s%s%s',
+			$this->GetCallBase($Verbose),
+			$this->GetCallDelim(),
+			$this->GetName()
+		);
+	}
+
+	public function
+	GetName():
+	string {
+
+		if(str_contains($this->Name,'::'))
+		return explode('::',$this->Name)[1];
+
+		return $this->Name;
+	}
+
+	public function
+	GetNamespace():
+	string {
+
+		if(str_contains($this->Name,'::'))
+		return explode('::',$this->Name)[0];
+
+		return $this->Name;
+	}
+
+	public function
+	IsInherited():
+	bool {
+
+		return $this->Inherited ? TRUE : FALSE;
+	}
+
+	public function
+	IsDefinedHere():
+	bool {
+
+
+		return $this->Inherited ? FALSE : TRUE;
 	}
 
 }

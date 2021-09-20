@@ -132,6 +132,17 @@ extends Nether\Object\Prototype {
 	}
 
 	public function
+	GetNamespaceLink(string $Path, bool $IsClass=TRUE):
+	string {
+
+		return sprintf(
+			'<a href="%s">%s</a>',
+			'',
+			''
+		);
+	}
+
+	public function
 	GetNamespaceLinks(string $Path, string $Spacer='', bool $IsClass=TRUE):
 	array {
 
@@ -149,7 +160,7 @@ extends Nether\Object\Prototype {
 				$Part
 			));
 
-			$Prev = trim("{$Prev}\\{$Part}",'\\');
+			$Prev = trim("{$Prev}/{$Part}",'\\');
 		}
 
 		if($IsClass)

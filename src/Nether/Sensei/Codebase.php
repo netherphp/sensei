@@ -6,9 +6,10 @@ use Nether;
 use Nether\Sensei\Meta;
 
 use JsonSerializable;
+use Nether\Object\Datastore;
+use Nether\Sensei\Inspectors\AbstractInspector;
 use Nether\Sensei\Inspectors\NamespaceInspector;
 use Nether\Sensei\Inspectors\ClassInspector;
-use Nether\Object\Datastore;
 
 #[Meta\Info('Describes the entire codebase that was scanned.')]
 class Codebase
@@ -153,6 +154,15 @@ implements JsonSerializable {
 	BakeClasses(Datastore $Classes):
 	static{
 
+		$Class = NULL;
+		$Method = NULL;
+
+		foreach($Classes as $Class) {
+			foreach($Class->Methods as $Method) {
+
+			}
+		}
+
 		($this->Classes)
 		->MergeRight($Classes->GetData());
 
@@ -216,8 +226,12 @@ implements JsonSerializable {
 		// notice the namespaces about their structures. nesting the direct
 		// children into eachother.
 
-		foreach($this->Namespaces as $NS) {
-			foreach($this->Namespaces as $NSS) {
+		($this->Namespaces)
+		->Each(function($NS){
+
+			($this->Namespaces)
+			->Each(function($NSS) use($NS) {
+
 				if(str_starts_with($NSS->Name, $NS->Name)) {
 					$NSP = ltrim(preg_replace(
 						sprintf('/^%s/',preg_quote($NS->Name, '/')),
@@ -225,15 +239,48 @@ implements JsonSerializable {
 						$NSS->Name
 					),'\\');
 
-					if($NSP && !str_contains($NSP,'\\')) {
-						echo "parking {$NSS->Name} in {$NS->Name}", PHP_EOL;
-						$NS->Namespaces->Shove($NSS->Name, $NSS);
-					}
+					if($NSP && !str_contains($NSP,'\\'))
+					$NS->Namespaces->Shove($NSS->Name, $NSS);
 				}
-			}
-		}
+
+				return;
+			});
+
+			return;
+		});
 
 		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	HasClasslike(string $Key):
+	bool {
+
+		$Output = (
+			FALSE
+			?: $this->Classes->HasKey($Key)
+			?: $this->Interfaces->HasKey($Key)
+			?: $this->Traits->HasKey($Key)
+		);
+
+		return $Output;
+	}
+
+	public function
+	GetClasslike(string $Key):
+	?ClassInspector {
+
+		$Output = (
+			NULL
+			?? $this->Classes->Get($Key)
+			?? $this->Interfaces->Get($Key)
+			?? $this->Traits->Get($Key)
+		);
+
+		return $Output;
 	}
 
 }

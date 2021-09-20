@@ -198,6 +198,12 @@ hr {
 .TagText.Secondary { color: var(--ColourSecondary); }
 .TagText.Type { color: var(--ColourType); }
 
+.Tag > a {
+	color: inherit;
+	text-decoration: none;
+	border-bottom: 0;
+}
+
 .FontCode {
 	font-family: 'Fira Code', 'Consolas', monospace;
 }

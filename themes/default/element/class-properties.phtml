@@ -14,19 +14,41 @@ $GetPrefix = function(Nether\Sensei\Inspectors\PropertyInspector $Input) {
 	<div class="font-weight-bold text-uppercase mb-4">Properties</div>
 
 	<div class="jumbotron jumbotron-dark p-4 HideTheLastHr">
-		<?php foreach($Class->Properties as $Prop): ?>
+		<?php foreach($Class->Properties as $Prop): /** @var Nether\Sensei\Inspectors\PropertyInspector $Prop */ ?>
 		<div>
 			<div class="mb-1">
 				<?php if($Prop->Static): ?>
 				<span class="Tag Class">static</span>
 				<?php endif; ?>
 				<span class="Tag Primary"><?php echo $Prop->GetAccessWord() ?></span>
-				<span class="Tag Type"><?php echo $Prop->Type, PHP_EOL ?></span>
+				<span class="Tag Type"><?php echo $Prop->Type ?></span>
+				<?php if($Prop->Inherited): ?>
+				<span class="Tag Secondary opacity-50">inherited</span>
+				<?php endif; ?>
 			</div>
 
 			<h3 class="FontCode m-0 p-0 lh-1">
-				<span class="opacity-25"><?php echo $GetPrefix($Prop) ?></span><?php echo $Prop->GetName() ?>
+				<span class="text-muted"><?php echo $Prop->GetCallBase(), $Prop->GetCallDelim() ?></span><?php echo $Prop->GetName() ?>
 			</h3>
+
+
+			<?php if($Prop->Override): ?>
+			<div class="mt-1 text-muted font-italic LinkLight">
+				overrides
+				<?php if($Origin = $Codebase->GetClasslike($Prop->Override)): ?>
+				<a href="<?php echo $Engine->GetAssetURL($Origin->GetFinalURI()) ?>"><?php echo $Origin->GetFullName() ?></a><?php echo $Prop->GetCallDelim() ?><a href="<?php echo $Engine->GetAssetURL($Origin->GetFinalURI("Method_{$Prop->GetName()}")) ?>"><?php echo $Prop->GetName() ?>()</a>
+				<?php else: ?>
+				<?php echo $Prop->GetCallMock() ?>()
+				<?php endif; ?>
+			</div>
+			<?php endif; ?>
+
+			<?php if($Prop->Info): ?>
+			<blockquote class="mt-3 mb-0 opacity-50">
+				<?php echo htmlentities($Prop->Info->Text) ?>
+			</blockquote>
+			<?php endif; ?>
+
 		</div>
 		<hr class="mt-5 mb-5 opacity-25" />
 		<?php endforeach; ?>
