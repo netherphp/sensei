@@ -154,15 +154,6 @@ implements JsonSerializable {
 	BakeClasses(Datastore $Classes):
 	static{
 
-		$Class = NULL;
-		$Method = NULL;
-
-		foreach($Classes as $Class) {
-			foreach($Class->Methods as $Method) {
-
-			}
-		}
-
 		($this->Classes)
 		->MergeRight($Classes->GetData());
 

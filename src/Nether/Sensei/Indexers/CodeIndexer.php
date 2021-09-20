@@ -96,15 +96,13 @@ extends Nether\Object\Prototype {
 					break;
 				}
 
-				//var_dump("{$this->Namespace}\\{$this->Class}");
-
 				return "{$this->Namespace}\\{$this->Class}";
 			}
 
 		};
 
 		foreach($this->Tokens as $K => $T) {
-			if($T->id === T_NAMESPACE)
+			if($T->id === T_NAMESPACE && $this->TokenisRealNamespace($K))
 			$Current->DigestNamespace($this->Tokens,$K);
 
 			elseif($T->id === T_CLASS && $this->TokenIsRealClass($K))
@@ -129,6 +127,23 @@ extends Nether\Object\Prototype {
 		}
 
 		return $this;
+	}
+
+	public function
+	TokenIsRealNamespace($K):
+	bool {
+
+		// see what is after now.
+
+		$C = $K;
+		while($this->Tokens[++$C]->id === T_WHITESPACE);
+
+			// named argument label
+			if($this->Tokens[$C]->text === ':')
+			return FALSE;
+
+
+		return TRUE;
 	}
 
 	public function
