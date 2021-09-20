@@ -96,6 +96,8 @@ extends Nether\Object\Prototype {
 					break;
 				}
 
+				//var_dump("{$this->Namespace}\\{$this->Class}");
+
 				return "{$this->Namespace}\\{$this->Class}";
 			}
 

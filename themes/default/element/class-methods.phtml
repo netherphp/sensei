@@ -34,8 +34,8 @@ use Nether\Sensei\Inspectors\MemberInspector;
 					<?php if($MultiLineArg): ?><div class="pt-2 pb-2"><?php endif; ?>
 						<?php foreach($Method->Args as $Irg => $Arg): ?>
 						<div class="<?php echo $MultiLineArg ? 'd-block ml-8 pt-2 pb-2' : 'd-inline' ?> font-size-normal">
-							<?php if($Codebase->HasClasslike("\\{$Arg->Type}")): ?>
-							<span class="Tag Type"><a href="<?php echo $Codebase->GetClasslike("\\{$Arg->Type}")->GetFinalURI() ?>"><?php echo $Class->GetArgumentType($Arg) ?></a></span>
+							<?php if($Codebase->HasClasslike($Arg->Type)): ?>
+							<span class="Tag Type"><a href="<?php echo $Codebase->GetClasslike($Arg->Type)->GetFinalURI() ?>"><?php echo $Class->GetArgumentType($Arg) ?></a></span>
 							<?php else: ?>
 							<span class="Tag Type"><?php echo $Class->GetArgumentType($Arg) ?></span>
 							<?php endif; ?>

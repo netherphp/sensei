@@ -259,6 +259,9 @@ implements JsonSerializable {
 	HasClasslike(string $Key):
 	bool {
 
+		if(!str_starts_with($Key,'\\'))
+		$Key = "\\{$Key}";
+
 		$Output = (
 			FALSE
 			?: $this->Classes->HasKey($Key)
@@ -272,6 +275,9 @@ implements JsonSerializable {
 	public function
 	GetClasslike(string $Key):
 	?ClassInspector {
+
+		if(!str_starts_with($Key,'\\'))
+		$Key = "\\{$Key}";
 
 		$Output = (
 			NULL

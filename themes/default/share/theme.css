@@ -201,7 +201,7 @@ hr {
 .Tag > a {
 	color: inherit;
 	text-decoration: none;
-	border-bottom: 0;
+	border-bottom-color: inherit;
 }
 
 .FontCode {
