@@ -57,6 +57,9 @@
 
 		$Codebase->BakeNamespaces();
 
+		//print_r($Codebase->Classes->Keys());
+		//print_r($Codebase->Namespaces->Keys());
+
 		file_put_contents(
 			$Outfile,
 			serialize($Codebase)

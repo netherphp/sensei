@@ -155,7 +155,14 @@ implements JsonSerializable {
 	static{
 
 		($this->Classes)
-		->MergeRight($Classes->GetData());
+		->MergeRight(
+			$Classes
+			->MapKeys(
+				fn($Key, $Val)=>
+				[ Util::GetNamespaceName($Key)=> $Val ]
+			)
+			->GetData()
+		);
 
 		return $this;
 	}
@@ -175,12 +182,12 @@ implements JsonSerializable {
 		// notice the namespaces the classes live in.
 
 		foreach($this->Classes as $Class) {
-			$Key = "\\{$Class->GetNamespaceName()}";
+			$Key = $Class->GetNamespaceName();
 
 			if(!isset($Data[$Key]))
 			$Data[$Key] = new NamespaceInspector($Key);
 
-			$Data[$Key]->Classes->Push($Class, $Class->Name);
+			$Data[$Key]->Classes->Push($Class, Util::GetNamespaceName($Class->Name));
 		}
 
 		// notice any namespaces that existed but contained nothing
@@ -198,12 +205,12 @@ implements JsonSerializable {
 			$NSP = '';
 
 			foreach($NSE as $NSS) {
-				$NSK = "{$NSP}\\{$NSS}";
+				$NSK = "{$NSP}{$NSS}";
 
 				if(!isset($Data[$NSK]))
 				$Data[$NSK] = new NamespaceInspector($NSK);
 
-				$NSP .= "\\{$NSS}";
+				$NSP .= "{$NSS}\\";
 			}
 		}
 
@@ -224,11 +231,11 @@ implements JsonSerializable {
 			->Each(function($NSS) use($NS) {
 
 				if(str_starts_with($NSS->Name, $NS->Name)) {
-					$NSP = ltrim(preg_replace(
+					$NSP = preg_replace(
 						sprintf('/^%s/',preg_quote($NS->Name, '/')),
 						'',
 						$NSS->Name
-					),'\\');
+					);
 
 					if($NSP && !str_contains($NSP,'\\'))
 					$NS->Namespaces->Shove($NSS->Name, $NSS);

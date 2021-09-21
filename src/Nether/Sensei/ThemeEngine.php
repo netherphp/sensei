@@ -110,7 +110,7 @@ extends Nether\Object\Prototype {
 
 		$URI = sprintf(
 			'%s%s',
-			str_repeat('../',($this->Data['PageDepth']-1)),
+			str_repeat('../',($this->Data['PageDepth'])),
 			trim($What,'/')
 		);
 
