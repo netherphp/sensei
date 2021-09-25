@@ -146,7 +146,7 @@ extends Nether\Object\Prototype {
 	GetNamespaceLinks(string $Path, string $Spacer='', bool $IsClass=TRUE):
 	array {
 
-		$Path = Util::GetNamespaceName($Path);
+		//$Path = Util::GetNamespaceName($Path);
 		$Output = [];
 		$Parts = explode('\\', $Path);
 		$Part = NULL;

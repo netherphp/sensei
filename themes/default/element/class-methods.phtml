@@ -10,6 +10,7 @@ use Nether\Sensei\Inspectors\MemberInspector;
  */
 
 ?>
+
 <div class="mb-6">
 	<hr class="m-0" />
 	<div class="font-weight-bold text-uppercase mb-4">Methods</div>
@@ -23,9 +24,6 @@ use Nether\Sensei\Inspectors\MemberInspector;
 				<?php endif; ?>
 				<span class="Tag Primary"><?php echo $Method->GetAccessWord() ?></span>
 				<span class="Tag Type"><?php echo Util::GetNamespaceName($Class->GetMemberType($Method)) ?></span>
-				<?php if($Method->IsInherited()): ?>
-				<span class="Tag Secondary opacity-50">inherited</span>
-				<?php endif; ?>
 			</div>
 
 			<h3 id="<?php echo "Method_{$Method->GetName()}" ?>" class="FontCode m-0 p-0 lh-1">
@@ -48,26 +46,52 @@ use Nether\Sensei\Inspectors\MemberInspector;
 					<?php endif; ?>
 				)
 			</h3>
-			<?php if($Method->Override && $Method->IsDefinedHere()): ?>
-			<div class="mt-1 text-muted font-italic LinkLight">
-				overrides
-				<?php if($Origin = $Codebase->GetClasslike($Method->Override)): /** @var Nether\Sensei\Inspectors\ClassInspector $Origin */ ?>
-				<a href="<?php echo $Engine->GetAssetURL($Origin->GetFinalURI()) ?>"><?php echo $Origin->GetFullName() ?></a><?php echo $Method->GetCallDelim() ?><a href="<?php echo $Engine->GetAssetURL($Origin->GetFinalURI("Method_{$Method->GetName()}")) ?>"><?php echo $Method->GetName() ?>()</a>
+
+			<?php if($Method->Inherited): ?>
+			<div class="font-size-small opacity-50 mt-1 LinkLight">
+				<i class="bi-arrow-return-right" title="Inherited From Parent Class"></i>
+				<?php if($Origin = $Codebase->GetClasslike($Method->Inherited)): ?>
+					<a href="<?php echo $Engine->GetAssetURL($Origin->GetFinalURI($Origin->GetBaseName())) ?>"><?php echo $Origin->Name ?></a>
+				<?php elseif(Util::IsBuiltInClass($Method->Inherited)): ?>
+					<span class="Tag Secondary">php</span>
+					<a href="<?php echo Util::GetClassManualURL($Method->Inherited) ?>"><?php echo $Method->Inherited ?></a>
 				<?php else: ?>
-				<?php echo $Method->GetCallMock(TRUE) ?>()
+					<span class="Tag">foreign</span>
+					<?php echo $Method->Inherited ?>
 				<?php endif; ?>
 			</div>
 			<?php endif; ?>
+
+			<?php if($Method->Override): ?>
+			<div class="font-size-small opacity-50 mt-1 LinkLight">
+				<i class="bi-arrow-up-square" title="Overrides Method From Parent Class"></i>
+				<?php if($Origin = $Codebase->GetClasslike($Method->Override)): ?>
+					<a href="<?php echo $Engine->GetAssetURL($Origin->GetFinalURI($Origin->GetBaseName())) ?>"><?php echo $Origin->Name ?></a>
+				<?php elseif(Util::IsBuiltInClass($Method->Override)): ?>
+					<span class="Tag Secondary">php</span>
+					<a href="<?php echo Util::GetClassManualURL($Method->Override) ?>"><?php echo $Method->Override ?></a>
+				<?php else: ?>
+					<span class="Tag">foreign</span>
+					<?php echo $Method->Override ?>
+				<?php endif; ?>
+			</div>
+			<?php endif ?>
+
 			<?php if($Method->Implement): ?>
-			<div class="mt-1 text-muted font-italic">
-				implements
-				<?php if($Origin = $Codebase->GetClasslike($Method->Implement)): /** @var Nether\Sensei\Inspectors\ClassInspector $Origin */ ?>
-				<a href="<?php echo $Engine->GetAssetURL($Origin->GetFinalURI()) ?>"><?php echo $Origin->GetFullName() ?></a><?php echo $Method->GetCallDelim() ?><a href="<?php echo $Engine->GetAssetURL($Origin->GetFinalURI("Method_{$Method->GetName()}")) ?>"><?php echo $Method->GetName() ?>()</a>
+			<div class="font-size-small opacity-50 mt-1 LinkLight">
+				<i class="bi-arrow-right-square" title="Implements For Interface"></i>
+				<?php if($Origin = $Codebase->GetClasslike($Method->Implement)): ?>
+					<a href="<?php echo $Engine->GetAssetURL($Origin->GetFinalURI($Origin->GetBaseName())) ?>"><?php echo $Origin->Name ?></a>
+				<?php elseif(Util::IsBuiltInInterface($Method->Implement)): ?>
+					<span class="Tag Secondary">php</span>
+					<a href="<?php echo Util::GetClassManualURL($Method->Implement) ?>"><?php echo $Method->Implement ?></a>
 				<?php else: ?>
-				<?php echo $Method->GetCallMock(TRUE) ?>()
+					<span class="Tag">foreign</span>
+					<?php echo $Method->Implement ?>
 				<?php endif; ?>
 			</div>
 			<?php endif; ?>
+
 			<?php if($Method->Info): ?>
 			<blockquote class="mt-3 mb-0 opacity-50">
 				<?php echo htmlentities($Method->Info->Text) ?>

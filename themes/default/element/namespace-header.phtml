@@ -2,6 +2,12 @@
 
 use Nether\Sensei\Util;
 
+/**
+ * @var Nether\Sensei\ThemeEngine $Engine
+ * @var Nether\Sensei\Codebase $Codebase
+ * @var Nether\Sensei\Inspectors\NamespaceInspector $Namespace
+ */
+
 $Trail = $Engine->GetNamespaceLinks(Util::GetNamespaceName($Namespace->Name));
 $Main = array_pop($Trail);
 
@@ -12,7 +18,7 @@ $Main = array_pop($Trail);
 		<div class="mb-1">
 			<span class="Tag Primary">namespace</span>
 		</div>
-		<h2 class="m-0 p-0 lh-1"><?php echo $Namespace->GetName() ?></h2>
+		<h2 class="m-0 p-0 lh-1"><?php echo $Namespace->GetBaseName() ?></h2>
 		<?php if(count($Trail)): ?>
 		<div class="mt-2 mb-0">
 			<?php foreach($Trail as $Link): ?>

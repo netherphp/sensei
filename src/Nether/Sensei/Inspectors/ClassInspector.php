@@ -63,20 +63,17 @@ extends AbstractInspector {
 	}
 
 	public function
-	GetFullName():
+	GetName():
 	string {
 
-		return ltrim($this->Name,'\\');
+		return $this->Name;
 	}
 
 	public function
-	GetClassName():
+	GetNiceName():
 	string {
 
-		return substr(
-			$this->Name,
-			(strrpos($this->Name,'\\') + 1)
-		);
+		return trim($this->Name,'\\');
 	}
 
 	public function
@@ -91,14 +88,16 @@ extends AbstractInspector {
 	}
 
 	public function
-	GetName():
+	GetURI(string $Ext=''):
 	string {
 
-		if(str_contains($this->Name,'\\'))
-		return array_reverse(explode('\\',$this->Name))[0];
+		$Path = explode('\\',trim("{$this->Name}{$Ext}",'\\'));
 
-		return $this->Name;
+		return join(DIRECTORY_SEPARATOR,$Path);
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	GetMemberType(MemberInspector $Member):
@@ -129,17 +128,9 @@ extends AbstractInspector {
 		return $Arg->Type;
 	}
 
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
-
-	public function
-	GetNamespacedPath(string $Ext=''):
-	string {
-
-		$Path = explode('\\',trim("{$this->Name}{$Ext}",'\\'));
-
-		return join(DIRECTORY_SEPARATOR,$Path);
-	}
 
 	protected function
 	Inspect():
@@ -157,7 +148,7 @@ extends AbstractInspector {
 		$this->Abstract = $Class->IsAbstract();
 		$this->Final = $Class->IsFinal();
 		$this->Attribute = count($Class->GetAttributes('Attribute')) > 0;
-		$this->Extends = $Extends ? "\\{$Extends->GetName()}" : NULL;
+		$this->Extends = $Extends ? $Extends->GetName() : NULL;
 
 		foreach($Class->GetAttributes(Meta\Info::class) as $Item)
 		$this->Info = $Item->NewInstance();

@@ -12,17 +12,26 @@ $IsForeign = function($Input) use($Codebase) {
 	<hr class="m-0" />
 	<div class="font-weight-bold text-uppercase mb-4">Interfaces</div>
 
-	<?php foreach($Class->Interfaces as $Iface): ?>
+	<?php foreach($Class->Interfaces as $IFace): ?>
 	<div class="mb-4">
 		<div class="jumbotron jumbotron-dark p-4">
-			<?php if($IsForeign($Iface)): ?>
+			<?php if($IsForeign($IFace)): ?>
 			<div class="mb-1">
+				<?php if(Util::IsBuiltInInterface($IFace)): ?>
+				<span class="Tag Secondary">php</span>
+				<?php else: ?>
 				<span class="Tag">foreign</span>
+				<?php endif; ?>
+				<span class="Tag Primary">interface</span>
 			</div>
 			<?php endif; ?>
 
-			<h3 class="FontCode m-0 p-0 lh-1">
-				<?php echo Util::GetNamespaceName($Iface) ?>
+			<h3 class="LinkLight m-0 p-0 lh-1">
+				<?php if(Util::IsBuiltInInterface($IFace)): ?>
+				<a href="<?php echo Util::GetClassManualURL($IFace) ?>" target="_blank"><?php echo $IFace ?></a>
+				<?php else: ?>
+				<?php echo Util::GetNamespaceName($IFace) ?>
+				<?php endif; ?>
 			</h3>
 		</div>
 	</div>

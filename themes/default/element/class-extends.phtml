@@ -13,12 +13,21 @@ $Main = array_pop($Trail);
 	<div class="font-weight-bold text-uppercase mb-4">Extends</div>
 
 	<div class="jumbotron jumbotron-dark p-4">
-		<?php if($Foreign): ?>
 		<div class="mb-1">
+			<?php if($Foreign && Util::IsBuiltInClass($Class->Extends)): ?>
+			<span class="Tag Secondary">php</span>
+			<?php elseif($Foreign): ?>
 			<span class="Tag">foreign</span>
+			<?php endif; ?>
+			<span class="Tag Primary">class</span>
 		</div>
-		<h3 class="m-0 p-0 lh-1"><?php echo Util::GetNamespaceName($Class->Extends) ?></h3>
-		<?php else: ?>
+		<h3 class="LinkLight m-0 p-0 lh-1">
+			<?php if($Foreign && Util::IsBuiltInClass($Class->Extends)): ?>
+			<a href="<?php echo Util::GetClassManualURL($Class->Extends) ?>" target="_blank"><?php echo strip_tags($Main) ?></a>
+			<?php elseif($Foreign): ?>
+			<?php echo $Main ?>
+			<?php endif; ?>
+		</h3>
 		<?php if(count($Trail)): ?>
 		<div class="mb-2">
 			<?php foreach($Trail as $Link): ?>
@@ -26,7 +35,6 @@ $Main = array_pop($Trail);
 			<?php endforeach; ?>
 		</div>
 		<?php endif; ?>
-		<h3 class="LinkLight m-0 p-0 lh-1"><?php echo $Main ?></h3>
-		<?php endif; ?>
+
 	</div>
 </div>

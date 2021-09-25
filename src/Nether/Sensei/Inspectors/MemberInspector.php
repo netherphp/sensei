@@ -95,9 +95,6 @@ extends AbstractInspector {
 	string {
 
 		if($Verbose) {
-			if($this->Implement)
-			return Util::GetNamespaceName($this->Implement);
-
 			if($this->Override)
 			return Util::GetNamespaceName($this->Override);
 		}
@@ -125,6 +122,30 @@ extends AbstractInspector {
 		return sprintf(
 			'%s%s%s',
 			$this->GetCallBase($Verbose),
+			$this->GetCallDelim(),
+			$this->GetName()
+		);
+	}
+
+	public function
+	GetCallMockInterface(bool $Verbose=FALSE):
+	string {
+
+		return sprintf(
+			'%s%s%s',
+			$this->Implement ? $this->Implement : $this->GetCallBase(FALSE),
+			$this->GetCallDelim(),
+			$this->GetName()
+		);
+	}
+
+	public function
+	GetCallMockOverride(bool $Verbose=FALSE):
+	string {
+
+		return sprintf(
+			'%s%s%s',
+			$this->Override ? $this->Override : $this->GetCallBase(FALSE),
 			$this->GetCallDelim(),
 			$this->GetName()
 		);
@@ -161,8 +182,7 @@ extends AbstractInspector {
 	IsDefinedHere():
 	bool {
 
-
-		return $this->Inherited ? FALSE : TRUE;
+		return $this->Inherited === NULL;
 	}
 
 }

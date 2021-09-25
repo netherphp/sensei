@@ -1,6 +1,21 @@
 #!/usr/bin/env php
 <?php
 
+
+(function(){
+
+	// before any application gets loaded lets pull a list of defined
+	// classes to pretend that all of those will have php manual entries.
+
+	$GLOBALS['SenseiPreloadData'] = [
+		'Classes'    => get_declared_classes(),
+		'Interfaces' => get_declared_interfaces(),
+		'Traits'     => get_declared_traits()
+	];
+
+	return;
+})();
+
 (function(){
 	$Autoloaders = [
 		// seems like a composer package aka normal.
@@ -41,7 +56,7 @@
 	int {
 
 		$Path = $this->GetInput(2) ?? NULL;
-		$Outfile = $this->GetOption('out') ?? 'nether-sensei-data.phson';
+		$Outfile = $this->GetOption('out') ?? 'sensei-data.phson';
 
 		if(!$Path)
 		$this->Quit(1);
@@ -76,7 +91,7 @@
 	int {
 
 		$Root = dirname(__FILE__,2);
-		$Infile = ($this->GetOption('in') ?? "{$Root}/nether-sensei-data.phson");
+		$Infile = ($this->GetOption('in') ?? "{$Root}/sensei-data.phson");
 		$Outdir = ($this->GetOption('out') ?? "{$Root}/docs");
 
 		if(!file_exists($Infile))

@@ -61,8 +61,11 @@ implements JsonSerializable {
 		////////
 
 		$Share = [
-			'share/bootstrap.min.css' => "{$Dir}/share/bootstrap.min.css",
-			'share/theme.css'         => "{$Dir}/share/theme.css"
+			'share/bootstrap.min.css'     => "{$Dir}/share/bootstrap.min.css",
+			'share/theme.css'             => "{$Dir}/share/theme.css",
+			'share/bootstrap-icons.css'   => "{$Dir}/share/bootstrap-icons.css",
+			'share/bootstrap-icons.woff'  => "{$Dir}/share/bootstrap-icons.woff",
+			'share/bootstrap-icons.woff2' => "{$Dir}/share/bootstrap-icons.woff2"
 		];
 
 		Nether\Sensei\Util::MkDir("{$Dir}/share");
@@ -129,7 +132,7 @@ implements JsonSerializable {
 		->Each(function(ClassInspector $Class) use($Theme,$Dir){
 			$Outfile = join(
 				DIRECTORY_SEPARATOR,
-				[ $Dir, $Class->GetNamespacedPath('.class.html') ]
+				[ $Dir, $Class->GetURI('.class.html') ]
 			);
 
 			(new ThemeEngine($Theme))
@@ -158,8 +161,8 @@ implements JsonSerializable {
 		->MergeRight(
 			$Classes
 			->MapKeys(
-				fn($Key, $Val)=>
-				[ Util::GetNamespaceName($Key)=> $Val ]
+				fn($Key, $Val)
+				=> [ $Val->GetNiceName() => $Val ]
 			)
 			->GetData()
 		);
@@ -182,12 +185,12 @@ implements JsonSerializable {
 		// notice the namespaces the classes live in.
 
 		foreach($this->Classes as $Class) {
-			$Key = $Class->GetNamespaceName();
+			$Key = $Class->GetDirName();
 
 			if(!isset($Data[$Key]))
 			$Data[$Key] = new NamespaceInspector($Key);
 
-			$Data[$Key]->Classes->Push($Class, Util::GetNamespaceName($Class->Name));
+			$Data[$Key]->Classes->Push($Class, $Class->GetNiceName());
 		}
 
 		// notice any namespaces that existed but contained nothing
@@ -204,6 +207,8 @@ implements JsonSerializable {
 			$NSE = explode('\\', Util::GetNamespaceName($NS->Name));
 			$NSP = '';
 
+			//var_dump($NS->Name, $NSE);
+
 			foreach($NSE as $NSS) {
 				$NSK = "{$NSP}{$NSS}";
 
@@ -213,6 +218,8 @@ implements JsonSerializable {
 				$NSP .= "{$NSS}\\";
 			}
 		}
+
+		//print_r($Data['Nether']->Namespaces->GetData());
 
 		($this->Namespaces)
 		->SetData($Data)
@@ -225,24 +232,20 @@ implements JsonSerializable {
 		// children into eachother.
 
 		($this->Namespaces)
-		->Each(function($NS){
+		->Each(function($NS) {
 
-			($this->Namespaces)
-			->Each(function($NSS) use($NS) {
+			$Dir = $NS->GetDirName();
+			$NSS = NULL;
 
-				if(str_starts_with($NSS->Name, $NS->Name)) {
-					$NSP = preg_replace(
-						sprintf('/^%s/',preg_quote($NS->Name, '/')),
-						'',
-						$NSS->Name
-					);
+			if($Dir && $this->Namespaces->HasKey($Dir)) {
+				$NSS = $this->Namespaces->Get($Dir);
 
-					if($NSP && !str_contains($NSP,'\\'))
-					$NS->Namespaces->Shove($NSS->Name, $NSS);
-				}
-
-				return;
-			});
+				if(!$NSS->Namespaces->HasKey($NS->Name))
+				$NSS->Namespaces->Shove(
+					$NS->Name,
+					$NS
+				);
+			}
 
 			return;
 		});
@@ -273,9 +276,6 @@ implements JsonSerializable {
 	public function
 	GetClasslike(string $Key):
 	?ClassInspector {
-
-		if(!str_starts_with($Key,'\\'))
-		$Key = "\\{$Key}";
 
 		$Output = (
 			NULL

@@ -35,4 +35,56 @@ class Util {
 		return str_replace('\\','/',$Input);
 	}
 
+	#[Meta\DateAdded('2021-09-24')]
+	#[Meta\Info('check if this class is built into php.')]
+	static public function
+	IsBuiltInClass(string $Name):
+	bool {
+
+		return in_array(
+			$Name,
+			$GLOBALS['SenseiPreloadData']['Classes']
+		);
+	}
+
+	#[Meta\DateAdded('2021-09-24')]
+	#[Meta\Info('check if this interface is built into php.')]
+	static public function
+	IsBuiltInInterface(string $Name):
+	bool {
+
+		return in_array(
+			$Name,
+			$GLOBALS['SenseiPreloadData']['Interfaces']
+		);
+	}
+
+	#[Meta\DateAdded('2021-09-24')]
+	#[Meta\Info('check if this trait is built into php.')]
+	static public function
+	IsBuiltInTrait(string $Name):
+	bool {
+
+		return in_array(
+			$Name,
+			$GLOBALS['SenseiPreloadData']['Traits']
+		);
+	}
+
+	#[Meta\DateAdded('2021-09-24')]
+	#[Meta\Info('given a thing, generate a url to the php manual.')]
+	static public function
+	GetClassManualURL(string $Name):
+	string {
+
+		// @todo make this configurable.
+		$Prefix = 'https://www.php.net/manual/en';
+
+		return sprintf(
+			'%s/class.%s.php',
+			trim($Prefix,'/'),
+			strtolower($Name)
+		);
+	}
+
 }

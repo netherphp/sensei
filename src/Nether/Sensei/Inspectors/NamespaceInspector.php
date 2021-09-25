@@ -10,7 +10,7 @@ use Nether\Object\Datastore;
 // ReflectionNamespace to digest.
 
 class NamespaceInspector
-extends Nether\Object\Prototype {
+extends AbstractInspector {
 
 	public string
 	$Name;
@@ -44,10 +44,14 @@ extends Nether\Object\Prototype {
 	GetName():
 	string {
 
-		if(str_contains($this->Name,'\\'))
-		return array_reverse(explode('\\',$this->Name))[0];
-
 		return $this->Name;
+	}
+
+	public function
+	GetNiceName():
+	string {
+
+		return trim($this->Name,'\\');
 	}
 
 	public function

@@ -76,7 +76,7 @@ extends Nether\Object\Prototype {
 					$this->Namespace .= trim($T->text) . "\\";
 				}
 
-				$this->Namespace = rtrim($this->Namespace,'\\');
+				$this->Namespace = trim($this->Namespace,'\\');
 
 				return $this->Namespace;
 			}
@@ -96,7 +96,7 @@ extends Nether\Object\Prototype {
 					break;
 				}
 
-				return "{$this->Namespace}\\{$this->Class}";
+				return trim("{$this->Namespace}\\{$this->Class}",'\\');
 			}
 
 		};
@@ -113,15 +113,19 @@ extends Nether\Object\Prototype {
 				"{$Current->Namespace}\\{$Current->Class}"
 			);
 
-			elseif($T->id === T_TRAIT)
+			elseif($T->id === T_TRAIT && $this->TokenIsRealClass($K))
 			$this->Traits->Push(
-				$Current->DigestClass($this->Tokens,$K),
+				new Nether\Sensei\Inspectors\ClassInspector(
+					$Current->DigestClass($this->Tokens,$K)
+				),
 				"{$Current->Namespace}\\{$Current->Class}"
 			);
 
-			elseif($T->id === T_INTERFACE)
+			elseif($T->id === T_INTERFACE && $this->TokenIsRealClass($K))
 			$this->Interfaces->Push(
-				$Current->DigestClass($this->Tokens,$K),
+				new Nether\Sensei\Inspectors\ClassInspector(
+					$Current->DigestClass($this->Tokens,$K)
+				),
 				"{$Current->Namespace}\\{$Current->Class}"
 			);
 		}

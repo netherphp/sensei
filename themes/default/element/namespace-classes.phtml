@@ -20,7 +20,7 @@ $IsForeign = function($Input) use($Codebase) {
 
 	<div class="jumbotron jumbotron-dark p-4">
 		<?php foreach($Namespace->Classes as $CKey => $Class): ?>
-		<div class="<?php echo $Codebase->Classes->IsLastKey($CKey) ? 'mb-0' : 'mb-4' ?>">
+		<div class="<?php echo $Namespace->Classes->IsLastKey($CKey) ? 'mb-0' : 'mb-4' ?>">
 			<div class="FontCode m-0 p-0 lh-1">
 				<?php foreach($Engine->GetNamespaceLinks(Util::GetNamespaceName($Class->Name)) as $Link): ?>
 				<span class="text-muted">&gt;</span> <?php echo $Link ?>

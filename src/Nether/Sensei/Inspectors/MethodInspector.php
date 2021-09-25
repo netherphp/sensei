@@ -36,7 +36,7 @@ extends MemberInspector {
 		$Return = $Info->GetReturnType();
 		$Arg = NULL;
 
-		$this->Inherited = "\\{$Info->GetDeclaringClass()->GetName()}";
+		$this->Inherited = $Info->GetDeclaringClass()->GetName();
 		$this->Final = $Info->IsFinal();
 		$this->Abstract = $Info->IsAbstract();
 		$this->Static = $Info->IsStatic();
@@ -44,9 +44,6 @@ extends MemberInspector {
 		$this->Protected = $Info->IsProtected();
 		$this->Private = $Info->IsPrivate();
 		$this->Type = $Return ? $Return->GetName() : 'mixed';
-
-		if($this->Inherited === $this->GetNamespace())
-		$this->Inherited = NULL;
 
 		foreach($Info->GetAttributes(Meta\Info::class) as $Arg)
 		$this->Info = $Arg->NewInstance();
@@ -68,19 +65,27 @@ extends MemberInspector {
 			}
 		}
 
-		// determine if overrriding a parent method.
+		// check if this is overriding a version from a parent class.
 
-		if($this->Inherited) {
+		if($this->Inherited !== NULL && $this->Inherited === $CName) {
 			$C = $Info->GetDeclaringClass();
 
 			do {
+				if($C->GetName() === $CName)
+				continue;
+
 				if($C->HasMethod($this->GetName())) {
-					$this->Override = "\\{$C->GetName()}";
+					$this->Override = $C->GetName();
 					break;
 				}
 			}
 			while($C = $C->GetParentClass());
 		}
+
+		// check that it really is inherited tho.
+
+		if($this->Inherited === $CName)
+		$this->Inherited = NULL;
 
 		return $this;
 	}

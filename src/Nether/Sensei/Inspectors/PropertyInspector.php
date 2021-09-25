@@ -20,7 +20,7 @@ extends MemberInspector {
 		$Type = $Info->GetType();
 		$Item = NULL;
 
-		$this->Inherited = "\\{$Info->GetDeclaringClass()->GetName()}";
+		$this->Inherited = $Info->GetDeclaringClass()->GetName();
 		$this->Static = $Info->IsStatic();
 		$this->Public = $Info->IsPublic();
 		$this->Protected = $Info->IsProtected();
@@ -33,19 +33,27 @@ extends MemberInspector {
 		foreach($Info->GetAttributes(Meta\Info::class) as $Item)
 		$this->Info = $Item->NewInstance();
 
-		// determine if overrriding a parent method.
+		// check if this is overriding a version from a parent class.
 
-		if($this->Inherited) {
+		if($this->Inherited !== NULL && $this->Inherited === $CName) {
 			$C = $Info->GetDeclaringClass();
 
 			do {
+				if($C->GetName() === $CName)
+				continue;
+
 				if($C->HasMethod($this->GetName())) {
-					$this->Override = "\\{$C->GetName()}";
+					$this->Override = $C->GetName();
 					break;
 				}
 			}
 			while($C = $C->GetParentClass());
 		}
+
+		// check that it really is inherited tho.
+
+		if($this->Inherited === $CName)
+		$this->Inherited = NULL;
 
 		return $this;
 	}
