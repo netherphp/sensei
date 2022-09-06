@@ -1,42 +1,28 @@
-#!/usr/bin/env php
+#!/usr/bin/php
 <?php
 
+// before any application gets loaded lets pull a list of defined
+// classes to pretend that all of those will have php manual entries.
 
-(function(){
+$GLOBALS['SenseiPreloadData'] = [
+	'Classes'    => get_declared_classes(),
+	'Interfaces' => get_declared_interfaces(),
+	'Traits'     => get_declared_traits()
+];
 
-	// before any application gets loaded lets pull a list of defined
-	// classes to pretend that all of those will have php manual entries.
+require('vendor/autoload.php');
 
-	$GLOBALS['SenseiPreloadData'] = [
-		'Classes'    => get_declared_classes(),
-		'Interfaces' => get_declared_interfaces(),
-		'Traits'     => get_declared_traits()
-	];
+use Nether\Console\Meta\Command;
+use Nether\Console\Meta\Info;
+use Nether\Console\Meta\Arg;
+use Nether\Console\Meta\Toggle;
+use Nether\Console\Meta\Value;
+use Nether\Console\Meta\Error;
 
-	return;
-})();
+class App
+extends Nether\Console\Client {
 
-(function(){
-	$Autoloaders = [
-		// seems like a composer package aka normal.
-		sprintf('%s/autoload.php',dirname(__FILE__,4)),
-
-		// seems like we're workin right here on the project.
-		sprintf('%s/vendor/autoload.php',dirname(__FILE__,2))
-	];
-
-	foreach($Autoloaders as $Autoloader)
-	if(file_exists($Autoloader)) {
-		require($Autoloader);
-		break;
-	}
-
-	return;
-})();
-
-(new class extends Nether\Console\Client {
-
-	#[Nether\Console\Meta\Subcommand]
+	#[Nether\Console\Meta\Command]
 	public function
 	HandleRun():
 	int {
@@ -47,10 +33,9 @@
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Subcommand]
-	#[Nether\Console\Meta\SubcommandArg('path')]
-	#[Nether\Console\Meta\Error(1,'No path specified.')]
-	#[Nether\Sensei\Meta\DateAdded('2021-09-12')]
+	#[Nether\Console\Meta\Command]
+	#[Nether\Console\Meta\Arg('path')]
+	#[Nether\Console\Meta\Error(1, 'No path specified.')]
 	public function
 	HandleCompile():
 	int {
@@ -83,9 +68,8 @@
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Subcommand]
-	#[Nether\Console\Meta\Error(1,'no input file found')]
-	#[Nether\Sensei\Meta\DateAdded('2021-09-12')]
+	#[Nether\Console\Meta\Command]
+	#[Nether\Console\Meta\Error(1, 'no input file found')]
 	public function
 	HandleRender():
 	int {
@@ -116,5 +100,6 @@
 		return 0;
 	}
 
-})
-->Run();
+};
+
+exit((new App)->Run());
