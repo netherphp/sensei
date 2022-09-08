@@ -9,6 +9,7 @@ use ReflectionMethod;
 use Nether\Object\Datastore;
 use Nether\Sensei\Inspectors\ClassInspector;
 use Nether\Sensei\Util;
+use ReflectionNamedType;
 
 class MethodInspector
 extends MemberInspector {
@@ -34,19 +35,23 @@ extends MemberInspector {
 
 		$Info = new ReflectionMethod($CName,$PName);
 		$Return = $Info->GetReturnType();
+		$Parent = $Info->GetDeclaringClass();
 		$Arg = NULL;
 
-		$this->Inherited = $Info->GetDeclaringClass()->GetName();
+		$this->Inherited = $Parent->GetName();
 		$this->Final = $Info->IsFinal();
 		$this->Abstract = $Info->IsAbstract();
 		$this->Static = $Info->IsStatic();
 		$this->Public = $Info->IsPublic();
 		$this->Protected = $Info->IsProtected();
 		$this->Private = $Info->IsPrivate();
-		$this->Type = $Return ? $Return->GetName() : 'mixed';
+		$this->Type = $Return instanceof ReflectionNamedType ? $Return->GetName() : 'mixed';
 
-		foreach($Info->GetAttributes(Meta\Info::class) as $Arg)
-		$this->Info = $Arg->NewInstance();
+		if($Parent->GetFilename())
+		$this->Info = Nether\Sensei\Util::GetNetherDocFromFileLine(
+			$Parent->GetFilename(),
+			$Info->GetStartLine()
+		);
 
 		// prepare argument list.
 

@@ -1,62 +1,69 @@
-#!/usr/bin/env php
+#!/usr/bin/php
 <?php
 
+// before any application gets loaded lets pull a list of defined
+// classes to pretend that all of those will have php manual entries.
 
-(function(){
+$GLOBALS['SenseiBuiltinData'] = [
+	'Classes'    => get_declared_classes(),
+	'Interfaces' => get_declared_interfaces(),
+	'Traits'     => get_declared_traits()
+];
 
-	// before any application gets loaded lets pull a list of defined
-	// classes to pretend that all of those will have php manual entries.
+require('vendor/autoload.php');
 
-	$GLOBALS['SenseiPreloadData'] = [
-		'Classes'    => get_declared_classes(),
-		'Interfaces' => get_declared_interfaces(),
-		'Traits'     => get_declared_traits()
-	];
+use Nether\Console\Meta\Command;
+use Nether\Console\Meta\Info;
+use Nether\Console\Meta\Arg;
+use Nether\Console\Meta\Toggle;
+use Nether\Console\Meta\Value;
+use Nether\Console\Meta\Error;
 
-	return;
-})();
+class App
+extends Nether\Console\Client {
 
-(function(){
-	$Autoloaders = [
-		// seems like a composer package aka normal.
-		sprintf('%s/autoload.php',dirname(__FILE__,4)),
-
-		// seems like we're workin right here on the project.
-		sprintf('%s/vendor/autoload.php',dirname(__FILE__,2))
-	];
-
-	foreach($Autoloaders as $Autoloader)
-	if(file_exists($Autoloader)) {
-		require($Autoloader);
-		break;
-	}
-
-	return;
-})();
-
-(new class extends Nether\Console\Client {
-
-	#[Nether\Console\Meta\Subcommand]
+	#[Nether\Console\Meta\Command]
+	#[Nether\Console\Meta\Toggle('--nether')]
 	public function
-	HandleRun():
+	Build():
 	int {
 
-		$this->HandleCompile();
-		$this->HandleRender();
+		$IncludeNether = $this->GetOption('nether') ?? FALSE;
+
+		////////
+
+		if($IncludeNether) {
+			$SearchPath = sprintf('%s/vendor/netherphp', getcwd());
+			$VendorDir = new FilesystemIterator($SearchPath);
+
+			foreach($VendorDir as $Item)
+			if($Item->IsDir())
+			$this->Args->Inputs->Push(sprintf(
+				'%s/src',
+				$Item->GetRealPath()
+			));
+
+		}
+
+		////////
+
+		$this->Compile();
+		$this->Dump();
 
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Subcommand]
-	#[Nether\Console\Meta\SubcommandArg('path')]
-	#[Nether\Console\Meta\Error(1,'No path specified.')]
-	#[Nether\Sensei\Meta\DateAdded('2021-09-12')]
+	#[Nether\Console\Meta\Command]
+	#[Nether\Console\Meta\Arg('path')]
+	#[Nether\Console\Meta\Error(1, 'No path specified.')]
 	public function
-	HandleCompile():
+	Compile():
 	int {
 
-		$Path = $this->GetInput(2) ?? NULL;
+		$Path = $this->GetInput(1) ?? NULL;
 		$Outfile = $this->GetOption('out') ?? 'sensei-data.phson';
+		$Name = $this->GetOption('name') ?? 'Project';
+		$BIFile = $this->GetOption('biout') ?? 'sensei-builtin.phson';
 
 		if(!$Path)
 		$this->Quit(1);
@@ -64,7 +71,9 @@
 		////////
 
 		$Codebase = new Nether\Sensei\Codebase;
+		$Codebase->Name = $Name;
 
+		foreach($this->Args->Inputs as $Path)
 		foreach(new Nether\Sensei\Indexers\FileIndexer($Path) as $File) {
 			$Code = Nether\Sensei\Indexers\CodeIndexer::FromFile($File);
 			$Codebase->BakeClasses($Code->Classes);
@@ -80,31 +89,34 @@
 			serialize($Codebase)
 		);
 
+		file_put_contents(
+			$BIFile,
+			serialize($GLOBALS['SenseiBuiltinData'] )
+		);
+
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Subcommand]
-	#[Nether\Console\Meta\Error(1,'no input file found')]
-	#[Nether\Sensei\Meta\DateAdded('2021-09-12')]
+	#[Nether\Console\Meta\Command]
+	#[Nether\Console\Meta\Info('Dump the codebase as data files.')]
 	public function
-	HandleRender():
+	Dump():
 	int {
 
-		$Root = dirname(__FILE__,2);
+		$Root = getcwd();
 		$Infile = ($this->GetOption('in') ?? "{$Root}/sensei-data.phson");
-		$Outdir = ($this->GetOption('out') ?? "{$Root}/docs");
+		$Outdir = ($this->GetOption('out') ?? "{$Root}/docs/phson");
 
 		if(!file_exists($Infile))
 		$this->Quit(1);
 
-		static::Messages(
-			"Input: {$Infile}",
-			"Output: {$Outdir}"
-		);
+		$this
+		->PrintLn("Input: {$Infile}")
+		->PrintLn("Output: {$Outdir}");
 
 		try {
 			$Codebase = unserialize(file_get_contents($Infile));
-			$Codebase->Render($Outdir);
+			$Codebase->RenderPhsonFiles($Outdir);
 		}
 
 		catch(Throwable $Err) {
@@ -116,5 +128,6 @@
 		return 0;
 	}
 
-})
-->Run();
+};
+
+exit((new App)->Run());

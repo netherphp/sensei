@@ -5,17 +5,21 @@
 	"license":"BSD-2-Clause",
 	"require": {
 		"php":">=8.0",
-		"netherphp/object": "^4.1.4",
-		"netherphp/console": "^4.0"
+		"netherphp/object": "dev-redux",
+		"netherphp/console": "dev-redux",
+		"netherphp/surface": "dev-redux"
 	},
 	"require-dev": {
-		"netherphp/standards": ">=0.1.0",
+		"netherphp/standards": "^0.2.7",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
 	},
 	"config": {
 		"preferred-install": {
 			"netherphp\/*": "source",
 			"*": "dist"
+		},
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
 		}
 	},
 	"autoload":{

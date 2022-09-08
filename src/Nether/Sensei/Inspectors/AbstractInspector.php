@@ -16,7 +16,7 @@ extends Nether\Object\Prototype {
 	public string
 	$FileExt;
 
-	public ?Nether\Sensei\Meta\Info
+	public ?string
 	$Info = NULL;
 
 	//abstract protected function

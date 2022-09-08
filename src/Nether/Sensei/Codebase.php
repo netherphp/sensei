@@ -16,6 +16,9 @@ class Codebase
 extends Nether\Object\Prototype
 implements JsonSerializable {
 
+	public string
+	$Name;
+
 	#[Nether\Object\Meta\PropertyObjectify]
 	public Nether\Object\Datastore
 	$Namespaces;
@@ -146,6 +149,87 @@ implements JsonSerializable {
 
 			return;
 		});
+
+		return $this;
+	}
+
+	public function
+	RenderJsonFiles(string $Dir):
+	static {
+
+		$Entry = NULL;
+
+		foreach($this->Namespaces as $NS) {
+			$Outfile = join(
+				DIRECTORY_SEPARATOR,
+				[ $Dir, Util::GetNamespaceName("{$NS->Name}/index.json") ]
+			);
+
+			Util::MkDir(dirname($Outfile));
+			file_put_contents($Outfile, json_encode($NS, JSON_PRETTY_PRINT));
+		}
+
+		foreach($this->Classes as $Class) {
+			$Outfile = join(
+				DIRECTORY_SEPARATOR,
+				[ $Dir, $Class->GetURI('.class.json') ]
+			);
+
+			file_put_contents($Outfile, json_encode($Class, JSON_PRETTY_PRINT));
+		}
+
+		return $this;
+	}
+
+	public function
+	RenderPhsonFiles(string $Dir):
+	static {
+
+		$Entry = NULL;
+		$Outfile = NULL;
+		$Outpath = NULL;
+
+		////////
+
+		// render project index.
+
+		$Outpath = Util::Repath(strtolower($Dir));
+		$Outfile = "{$Outpath}/index.phson";
+
+		Util::MkDir($Outpath);
+		file_put_contents($Outfile, serialize($this));
+
+		/////////
+
+		// render namespace indexes.
+
+		foreach($this->Namespaces as $NS) {
+			$Outpath = Util::Repath(strtolower(
+				Util::GetNamespaceName("{$Dir}/{$NS->Name}")
+			));
+
+			$Outfile = "{$Outpath}.namespace.phson";
+
+			Util::MkDir($Outpath);
+			file_put_contents($Outfile, serialize($NS));
+		}
+
+		////////
+
+		// render class files.
+
+		foreach($this->Classes as $Class) {
+			$Outpath = Util::Repath(strtolower(
+				"{$Dir}/{$Class->GetURI('.class.phson')}"
+			));
+
+			$Outfile = join(
+				DIRECTORY_SEPARATOR,
+				[ $Dir, strtolower($Class->GetURI('.class.phson')) ]
+			);
+
+			file_put_contents($Outfile, serialize($Class));
+		}
 
 		return $this;
 	}

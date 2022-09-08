@@ -30,6 +30,12 @@ extends AbstractInspector {
 	public bool
 	$Attribute = FALSE;
 
+	public bool
+	$Interface = FALSE;
+
+	public bool
+	$Trait = FALSE;
+
 	public ?string
 	$Extends = NULL;
 
@@ -73,7 +79,7 @@ extends AbstractInspector {
 	GetNiceName():
 	string {
 
-		return trim($this->Name,'\\');
+		return trim($this->Name, '\\');
 	}
 
 	public function
@@ -88,12 +94,146 @@ extends AbstractInspector {
 	}
 
 	public function
+	GetTypeWord():
+	string {
+
+		if($this->Interface)
+		return 'interface';
+
+		if($this->Trait)
+		return 'trait';
+
+		if($this->Attribute)
+		return 'attribute';
+
+		return 'class';
+	}
+
+	public function
 	GetURI(string $Ext=''):
 	string {
 
-		$Path = explode('\\',trim("{$this->Name}{$Ext}",'\\'));
+		$Path = strtolower(trim("{$this->Name}{$Ext}",'\\'));
+		$Path = explode('\\', $Path);
 
-		return join(DIRECTORY_SEPARATOR,$Path);
+		return join(DIRECTORY_SEPARATOR, $Path);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	GetConstantsLocal():
+	Datastore {
+
+		return (
+			$this->Constants
+			->Distill(
+				fn(ConstantInspector $A)
+				=> $A->Inherited === NULL
+			)
+			->Sort(function(ConstantInspector $A, ConstantInspector $B) {
+				if($A->GetAccessSortable() !== $B->GetAccessSortable())
+				return $A->GetAccessSortable() <=> $B->GetAccessSortable();
+
+				return $A->Name <=> $B->Name;
+			})
+		);
+	}
+
+	public function
+	GetConstantsInherited():
+	Datastore {
+
+		return (
+			$this->Constants
+			->Distill(
+				fn(ConstantInspector $A)
+				=> $A->Inherited !== NULL
+			)
+			->Sort(function(ConstantInspector $A, ConstantInspector $B) {
+				if($A->GetAccessSortable() !== $B->GetAccessSortable())
+				return $A->GetAccessSortable() <=> $B->GetAccessSortable();
+
+				return $A->Name <=> $B->Name;
+			})
+		);
+	}
+
+	public function
+	GetMethodsLocal():
+	Datastore {
+
+		return (
+			$this->Methods
+			->Distill(
+				fn(MethodInspector $A)
+				=> $A->Inherited === NULL
+			)
+			->Sort(function(MethodInspector $A, MethodInspector $B) {
+				if($A->GetAccessSortable() !== $B->GetAccessSortable())
+				return $A->GetAccessSortable() <=> $B->GetAccessSortable();
+
+				return $A->Name <=> $B->Name;
+			})
+		);
+	}
+
+	public function
+	GetMethodsInherited():
+	Datastore {
+
+		return (
+			$this->Methods
+			->Distill(
+				fn(MethodInspector $A)
+				=> $A->Inherited !== NULL
+			)
+			->Sort(function(MethodInspector $A, MethodInspector $B) {
+				if($A->GetAccessSortable() !== $B->GetAccessSortable())
+				return $A->GetAccessSortable() <=> $B->GetAccessSortable();
+
+				return $A->Name <=> $B->Name;
+			})
+		);
+	}
+
+	public function
+	GetPropertiesLocal():
+	Datastore {
+
+		return (
+			$this->Properties
+			->Distill(
+				fn(PropertyInspector $A)
+				=> $A->Inherited === NULL
+			)
+			->Sort(function(PropertyInspector $A, PropertyInspector $B) {
+				if($A->GetAccessSortable() !== $B->GetAccessSortable())
+				return $A->GetAccessSortable() <=> $B->GetAccessSortable();
+
+				return $A->Name <=> $B->Name;
+			})
+		);
+	}
+
+	public function
+	GetPropertiesInherited():
+	Datastore {
+
+		return (
+			$this->Properties
+			->Distill(
+				fn(PropertyInspector $A)
+				=> $A->Inherited !== NULL
+			)
+			->Sort(function(PropertyInspector $A, PropertyInspector $B) {
+				if($A->GetAccessSortable() !== $B->GetAccessSortable())
+				return $A->GetAccessSortable() <=> $B->GetAccessSortable();
+
+				return $A->Name <=> $B->Name;
+			})
+		);
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -136,7 +276,7 @@ extends AbstractInspector {
 	Inspect():
 	static {
 
-		if(!class_exists($this->Name))
+		if(!class_exists($this->Name) && !trait_exists($this->Name) && !interface_exists($this->Name))
 		throw new Exception("{$this->Name}");
 
 		////////
@@ -149,9 +289,12 @@ extends AbstractInspector {
 		$this->Final = $Class->IsFinal();
 		$this->Attribute = count($Class->GetAttributes('Attribute')) > 0;
 		$this->Extends = $Extends ? $Extends->GetName() : NULL;
-
-		foreach($Class->GetAttributes(Meta\Info::class) as $Item)
-		$this->Info = $Item->NewInstance();
+		$this->Interface = $Class->IsInterface();
+		$this->Trait = $Class->IsTrait();
+		$this->Info = Nether\Sensei\Util::GetNetherDocFromFileLine(
+			$Class->GetFilename(),
+			$Class->GetStartLine()
+		);
 
 		foreach($Class->GetInterfaces() as $Item)
 		$this->Interfaces->Push(

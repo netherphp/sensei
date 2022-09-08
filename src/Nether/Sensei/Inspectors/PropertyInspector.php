@@ -1,6 +1,7 @@
 <?php
 
 namespace Nether\Sensei\Inspectors;
+use Nether;
 
 use Nether\Sensei\Meta;
 
