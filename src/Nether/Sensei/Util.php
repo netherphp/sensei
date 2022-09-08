@@ -2,6 +2,8 @@
 
 namespace Nether\Sensei;
 
+use Nether\Object\Datastore;
+
 class Util {
 
 	#[Meta\DateAdded('2021-09-12')]
@@ -15,6 +17,13 @@ class Util {
 		umask($UMask);
 
 		return is_dir($Dir);
+	}
+
+	static public function
+	Repath(string $Input):
+	string {
+
+		return str_replace('\\', '/', $Input);
 	}
 
 	#[Meta\DateAdded('2021-09-12')]
@@ -43,7 +52,7 @@ class Util {
 
 		return in_array(
 			$Name,
-			$GLOBALS['SenseiPreloadData']['Classes']
+			$GLOBALS['SenseiBuiltinData']['Classes']
 		);
 	}
 
@@ -55,7 +64,7 @@ class Util {
 
 		return in_array(
 			$Name,
-			$GLOBALS['SenseiPreloadData']['Interfaces']
+			$GLOBALS['SenseiBuiltinData']['Interfaces']
 		);
 	}
 
@@ -67,7 +76,7 @@ class Util {
 
 		return in_array(
 			$Name,
-			$GLOBALS['SenseiPreloadData']['Traits']
+			$GLOBALS['SenseiBuiltinData']['Traits']
 		);
 	}
 
@@ -85,6 +94,182 @@ class Util {
 			trim($Prefix,'/'),
 			strtolower($Name)
 		);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	GenerateNamespaceLinkChain(string $Input, string $Prefix='/docs'):
+	array {
+
+		$Bits = new Datastore(explode('\\', $Input));
+		$Namespace = '';
+		$Output = [];
+
+		foreach($Bits as $Key => $Bit) {
+			$Namespace .= "/{$Bit}";
+
+			$Output[$Bit] = sprintf(
+				'%s/%s.namespace',
+				$Prefix,
+				trim(strtolower($Namespace), '/')
+			);
+		}
+
+		return $Output;
+	}
+
+	static public function
+	GenerateNamespaceLinkChainHTML(string $Input, string $Prefix='/docs'):
+	string {
+
+		// todo use the link chain method first then add to the result
+
+		$Bits = new Datastore(explode('\\', $Input));
+		$Namespace = '';
+		$Output = '';
+
+		foreach($Bits as $Key => $Bit) {
+			$Namespace .= "/{$Bit}";
+
+			$Output .= sprintf(
+				'<a href="%s/%s.namespace">%s</a>',
+				$Prefix,
+				trim(strtolower($Namespace), '/'),
+				$Bit
+			);
+
+			if(!$Bits->IsLastKey($Key))
+			$Output .= ' \ ';
+		}
+
+		return $Output;
+	}
+
+	static public function
+	GenerateClassLinkChain(string $Input, string $Prefix='/docs'):
+	string {
+
+		$Bits = new Datastore(explode('\\', $Input));
+		$Namespace = '';
+		$Output = '';
+
+		foreach($Bits as $Key => $Bit) {
+			if($Bits->IsLastKey($Key)) {
+				$Output .= sprintf(
+					'/%s/%s/%s.class',
+					$Prefix,
+					ltrim(strtolower($Namespace), '/'),
+					strtolower($Bit)
+				);
+
+				continue;
+			}
+
+			$Namespace .= "/{$Bit}";
+			$Output .= sprintf(
+				'/%s/%s.namespace',
+				$Prefix,
+				ltrim(strtolower($Namespace), '/')
+			);
+		}
+
+		return $Output;
+	}
+
+	static public function
+	GenerateClassLinkChainHTML(string $Input, string $Prefix='/docs'):
+	string {
+
+		// todo use the link chain method first then add to the result
+
+		$Bits = new Datastore(explode('\\', $Input));
+		$Namespace = '';
+		$Output = '';
+
+		foreach($Bits as $Key => $Bit) {
+			if($Bits->IsLastKey($Key)) {
+				$Output .= sprintf(
+					'<a href="/docs/%s/%s.class">%s</a>',
+					ltrim(strtolower($Namespace), '/'),
+					strtolower($Bit),
+					$Bit
+				);
+
+				continue;
+			}
+
+			$Namespace .= "/{$Bit}";
+			$Output .= sprintf(
+				'<a href="/docs/%s.namespace">%s</a> \\ ',
+				ltrim(strtolower($Namespace), '/'),
+				$Bit
+			);
+		}
+
+		return $Output;
+	}
+
+	static public function
+	GetNetherDocFromFileLine(string $Filename, int $LineStart=1):
+	string {
+
+		$Data = array_slice(
+			file($Filename),
+			($LineStart - 1)
+		);
+
+		$Output = '';
+		$Iter = 0;
+		$Cap = 1;
+		$Open = FALSE;
+
+		for($Iter = 0; $Iter <= $Cap; $Iter++) {
+			if($Iter >= count($Data))
+			break;
+
+			// full line breaks mean no sensei block.
+
+			if(trim($Data[$Iter]) === '')
+			break;
+
+			// if we haven't started reading yet see if there is a reason
+			// we should continue reading.
+
+			if(!$Open)
+			if(preg_match('#(?:[\(\)\{\:\;\,\.])|(?:namespace|class|function)#', $Data[$Iter]))
+			$Cap++;
+
+			////////
+
+			$Line = trim($Data[$Iter]);
+
+			if(preg_match('#\/\*\/\/#', $Line))
+			$Open = TRUE;
+
+			if($Open) {
+				$Cap++;
+
+				if(!str_starts_with($Line, '@'))
+				$Output .= $Line . PHP_EOL;
+			}
+
+			if(preg_match('#\/\/\*\/#', $Line))
+			$Open = FALSE;
+		}
+
+		return trim($Output);
+	}
+
+	static public function
+	TrimNetherDoc(string $Input):
+	string {
+
+		$Output = trim($Input, '/*');
+		$Output = trim($Output);
+
+		return $Output;
 	}
 
 }

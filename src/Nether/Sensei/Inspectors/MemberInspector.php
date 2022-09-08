@@ -185,4 +185,14 @@ extends AbstractInspector {
 		return $this->Inherited === NULL;
 	}
 
+	public function
+	GetTypeWord():
+	string {
+
+		if($this->Type === 'static' || $this->Type === 'self')
+		return '$this';
+
+		return $this->Type;
+	}
+
 }

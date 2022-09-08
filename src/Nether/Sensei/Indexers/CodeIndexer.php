@@ -105,7 +105,7 @@ extends Nether\Object\Prototype {
 			if($T->id === T_NAMESPACE && $this->TokenisRealNamespace($K))
 			$Current->DigestNamespace($this->Tokens,$K);
 
-			elseif($T->id === T_CLASS && $this->TokenIsRealClass($K))
+			elseif(($T->id === T_CLASS || $T->id === T_INTERFACE || $T->id === T_TRAIT) && $this->TokenIsRealClass($K))
 			$this->Classes->Push(
 				new Nether\Sensei\Inspectors\ClassInspector(
 					$Current->DigestClass($this->Tokens,$K)
@@ -154,31 +154,42 @@ extends Nether\Object\Prototype {
 	TokenIsRealClass($K):
 	bool {
 
-		// see what is before now.
+		// see what is before now. keep rewinding until we find something
+		// that is something.
 
 		$C = $K;
 		while($this->Tokens[--$C]->id === T_WHITESPACE);
 
-			// anonymous class.
-			if($this->Tokens[$C]->id === T_NEW)
-			return FALSE;
+		// anonymous class.
+		if($this->Tokens[$C]->id === T_NEW)
+		return FALSE;
+
+		// class::class constant.
+		if($this->Tokens[$C]->id === T_PAAMAYIM_NEKUDOTAYIM)
+		return FALSE;
+
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
 
 		// see what is after now.
 
 		$C = $K;
 		while($this->Tokens[++$C]->id === T_WHITESPACE);
 
-			// named argument label
-			if($this->Tokens[$C]->text === ':')
-			return FALSE;
+		// named argument label
+		if($this->Tokens[$C]->text === ':')
+		return FALSE;
 
-			// probably ::class, as an argument.
-			if($this->Tokens[$C]->text === ',')
-			return FALSE;
+		// probably ::class, as an argument.
+		if($this->Tokens[$C]->text === ',')
+		return FALSE;
 
-			// probably ::class) as an arugment.
-			if($this->Tokens[$C]->text === ')')
-			return FALSE;
+		// probably ::class) as an arugment.
+		if($this->Tokens[$C]->text === ')')
+		return FALSE;
+
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
 
 		return TRUE;
 	}
