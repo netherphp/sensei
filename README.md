@@ -1,30 +1,19 @@
 # Nether Sensei
 
-Static documentation generator. The more verbose you write your code, the more
-info it will be able to find thusly requiring fewer phpDoc blocks. Once you
-finally start writing with all the features of PHP 7.4+, at most you will need
-commenting for is to put your thoughts to words. No more having to tag things
-like argument or return types.
+Build documentation for code in the directories `core` and `routes`.
 
-# Requirements
+```
+nsen build core routes
+```
 
-* PHP 8+
+Build documentation for all the Nether components you have installed.
 
-# Installation
+```
+nsen build --nether
+```
 
-It will be installed via Composer once ready. If this was a video game I'd
-tag it as early access.
+Build documentation for both local code and Nether at the same time.
 
-# Usage
-
-Run through a directory of code and compile an index. Without any options
-supplied it will create a file called `nether-sensei-data.phson` in the
-current working directory.
-
-> $ nsen compile src
-
-Build a directory of HTML from the code index. Without any options supplied
-it will be built in a directory called `docs` in the current working
-directory.
-
-> $ nsen render
+```
+nsen build core routes --nether
+```

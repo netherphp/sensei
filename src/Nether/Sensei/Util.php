@@ -3,6 +3,8 @@
 namespace Nether\Sensei;
 
 use Nether\Object\Datastore;
+use Nether\Sensei\Inspectors\NamespaceInspector;
+use Nether\Sensei\Inspectors\ClassInspector;
 
 class Util {
 
@@ -211,6 +213,9 @@ class Util {
 		return $Output;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	static public function
 	GetNetherDocFromFileLine(string $Filename, int $LineStart=1):
 	string {
@@ -270,6 +275,33 @@ class Util {
 		$Output = trim($Output);
 
 		return $Output;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	FitlerNamespaceNotEmpty(NamespaceInspector $Namespace):
+	bool {
+
+		return ($Namespace->Classes->Count() > 0);
+	}
+
+	static public function
+	SortClassesByLogic(ClassInspector $A, ClassInspector $B):
+	int {
+
+		if($A->GetTypeWord() !== $B->GetTypeWord())
+		return $A->GetTypeWord() <=> $B->GetTypeWord();
+
+		return $A->Name <=> $B->Name;
+	}
+
+	static public function
+	SortClassesByName(ClassInspector $A, ClassInspector $B):
+	int {
+
+		return $A->Name <=> $B->Name;
 	}
 
 }

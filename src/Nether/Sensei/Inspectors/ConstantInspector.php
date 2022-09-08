@@ -7,6 +7,9 @@ use ReflectionClassConstant;
 class ConstantInspector
 extends MemberInspector {
 
+	public mixed
+	$Value;
+
 	protected function
 	Inspect(ClassInspector $Class):
 	static {
@@ -18,6 +21,7 @@ extends MemberInspector {
 		$this->Protected = $Info->IsProtected();
 		$this->Private = $Info->IsPrivate();
 		$this->Type = gettype($Info->GetValue());
+		$this->Value = $Info->GetValue();
 
 		return $this;
 	}
