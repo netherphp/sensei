@@ -73,10 +73,14 @@ extends Nether\Console\Client {
 		$Codebase = new Nether\Sensei\Codebase;
 		$Codebase->Name = $Name;
 
-		foreach($this->Args->Inputs as $Path)
-		foreach(new Nether\Sensei\Indexers\FileIndexer($Path) as $File) {
-			$Code = Nether\Sensei\Indexers\CodeIndexer::FromFile($File);
-			$Codebase->BakeClasses($Code->Classes);
+		foreach($this->Args->Inputs as $Path) {
+			if(!is_dir($Path))
+			continue;
+
+			foreach(new Nether\Sensei\Indexers\FileIndexer($Path) as $File) {
+				$Code = Nether\Sensei\Indexers\CodeIndexer::FromFile($File);
+				$Codebase->BakeClasses($Code->Classes);
+			}
 		}
 
 		$Codebase->BakeNamespaces();
