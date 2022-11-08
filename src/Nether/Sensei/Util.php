@@ -49,37 +49,52 @@ class Util {
 	#[Meta\DateAdded('2021-09-24')]
 	#[Meta\Info('check if this class is built into php.')]
 	static public function
-	IsBuiltInClass(string $Name):
+	IsBuiltInClass(string $Name, array $Data=NULL):
 	bool {
 
-		return in_array(
-			$Name,
-			$GLOBALS['SenseiBuiltinData']['Classes']
-		);
+		if($Data === NULL) {
+			if(isset($GLOBALS['SenseiBuiltinData']))
+			$Data = $GLOBALS['SenseiBuiltinData']['Classes'];
+		}
+
+		if($Data === NULL)
+		$Data = [];
+
+		return in_array($Name, $Data);
 	}
 
 	#[Meta\DateAdded('2021-09-24')]
 	#[Meta\Info('check if this interface is built into php.')]
 	static public function
-	IsBuiltInInterface(string $Name):
+	IsBuiltInInterface(string $Name, array $Data=NULL):
 	bool {
 
-		return in_array(
-			$Name,
-			$GLOBALS['SenseiBuiltinData']['Interfaces']
-		);
+		if($Data === NULL) {
+			if(isset($GLOBALS['SenseiBuiltinData']))
+			$Data = $GLOBALS['SenseiBuiltinData']['Interfaces'];
+		}
+
+		if($Data === NULL)
+		$Data = [];
+
+		return in_array($Name, $Data);
 	}
 
 	#[Meta\DateAdded('2021-09-24')]
 	#[Meta\Info('check if this trait is built into php.')]
 	static public function
-	IsBuiltInTrait(string $Name):
+	IsBuiltInTrait(string $Name, array $Data=NULL):
 	bool {
 
-		return in_array(
-			$Name,
-			$GLOBALS['SenseiBuiltinData']['Traits']
-		);
+		if($Data === NULL) {
+			if(isset($GLOBALS['SenseiBuiltinData']))
+			$Data = $GLOBALS['SenseiBuiltinData']['Traits'];
+		}
+
+		if($Data === NULL)
+		$Data = [];
+
+		return in_array($Name, $Data);
 	}
 
 	#[Meta\DateAdded('2021-09-24')]
