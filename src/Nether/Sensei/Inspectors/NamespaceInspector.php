@@ -1,10 +1,10 @@
 <?php
 
 namespace Nether\Sensei\Inspectors;
-
 use Nether;
 
 use Nether\Object\Datastore;
+use Nether\Sensei\Util;
 
 // this is more of an honorary inspector than anything since there is no
 // ReflectionNamespace to digest.
@@ -76,6 +76,15 @@ extends AbstractInspector {
 		$Path = explode('\\', $Path);
 
 		return join(DIRECTORY_SEPARATOR, $Path);
+	}
+
+	public function
+	SortForPresentation():
+	void {
+
+		$this->Classes->Sort(Util::SortClassesByLogic(...));
+
+		return;
 	}
 
 }
