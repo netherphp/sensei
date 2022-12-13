@@ -277,7 +277,7 @@ extends AbstractInspector {
 	static {
 
 		if(!class_exists($this->Name) && !trait_exists($this->Name) && !interface_exists($this->Name))
-		throw new Exception("{$this->Name}");
+		throw new Exception("Invalid Class Found: {$this->Name}");
 
 		////////
 
