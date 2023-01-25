@@ -3,9 +3,10 @@
 	"description":"Documentation Generator",
 	"keywords":["php","documentation"],
 	"license":"BSD-2-Clause",
+	"minimum-stability": "dev",
 	"require": {
 		"php":">=8.0",
-		"netherphp/object": "dev-redux",
+		"netherphp/common": "^5.0.5",
 		"netherphp/console": "dev-redux",
 		"netherphp/surface": "dev-redux"
 	},
