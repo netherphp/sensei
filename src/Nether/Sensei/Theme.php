@@ -8,7 +8,7 @@ use SplFileInfo;
 use Exception;
 
 class Theme
-extends Nether\Object\Prototype {
+extends Nether\Common\Prototype {
 
 	public string
 	$Path;

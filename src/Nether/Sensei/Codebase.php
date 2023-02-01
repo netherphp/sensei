@@ -6,33 +6,33 @@ use Nether;
 use Nether\Sensei\Meta;
 
 use JsonSerializable;
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 use Nether\Sensei\Inspectors\AbstractInspector;
 use Nether\Sensei\Inspectors\NamespaceInspector;
 use Nether\Sensei\Inspectors\ClassInspector;
 
 #[Meta\Info('Describes the entire codebase that was scanned.')]
 class Codebase
-extends Nether\Object\Prototype
+extends Nether\Common\Prototype
 implements JsonSerializable {
 
 	public string
 	$Name;
 
-	#[Nether\Object\Meta\PropertyObjectify]
-	public Nether\Object\Datastore
+	#[Nether\Common\Meta\PropertyObjectify]
+	public Nether\Common\Datastore
 	$Namespaces;
 
-	#[Nether\Object\Meta\PropertyObjectify]
-	public Nether\Object\Datastore
+	#[Nether\Common\Meta\PropertyObjectify]
+	public Nether\Common\Datastore
 	$Interfaces;
 
-	#[Nether\Object\Meta\PropertyObjectify]
-	public Nether\Object\Datastore
+	#[Nether\Common\Meta\PropertyObjectify]
+	public Nether\Common\Datastore
 	$Traits;
 
-	#[Nether\Object\Meta\PropertyObjectify]
-	public Nether\Object\Datastore
+	#[Nether\Common\Meta\PropertyObjectify]
+	public Nether\Common\Datastore
 	$Classes;
 
 	////////////////////////////////////////////////////////////////

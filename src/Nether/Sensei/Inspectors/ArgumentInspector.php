@@ -6,7 +6,7 @@ use Nether;
 
 use ReflectionParameter;
 use ReflectionUnionType;
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 
 class ArgumentInspector
 extends AbstractInspector {

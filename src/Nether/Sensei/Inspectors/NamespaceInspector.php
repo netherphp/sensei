@@ -3,7 +3,7 @@
 namespace Nether\Sensei\Inspectors;
 use Nether;
 
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 use Nether\Sensei\Util;
 
 // this is more of an honorary inspector than anything since there is no
@@ -15,19 +15,19 @@ extends AbstractInspector {
 	public string
 	$Name;
 
-	#[Nether\Object\Meta\PropertyObjectify]
+	#[Nether\Common\Meta\PropertyObjectify]
 	public Datastore
 	$Namespaces;
 
-	#[Nether\Object\Meta\PropertyObjectify]
+	#[Nether\Common\Meta\PropertyObjectify]
 	public Datastore
 	$Classes;
 
-	#[Nether\Object\Meta\PropertyObjectify]
+	#[Nether\Common\Meta\PropertyObjectify]
 	public Datastore
 	$Interfaces;
 
-	#[Nether\Object\Meta\PropertyObjectify]
+	#[Nether\Common\Meta\PropertyObjectify]
 	public Datastore
 	$Traits;
 

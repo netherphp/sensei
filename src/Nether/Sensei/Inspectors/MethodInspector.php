@@ -6,7 +6,7 @@ use Nether;
 use Nether\Sensei\Meta;
 
 use ReflectionMethod;
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 use Nether\Sensei\Inspectors\ClassInspector;
 use Nether\Sensei\Util;
 use ReflectionNamedType;
@@ -20,7 +20,7 @@ extends MemberInspector {
 	public bool
 	$Abstract = FALSE;
 
-	#[Nether\Object\Meta\PropertyObjectify]
+	#[Nether\Common\Meta\PropertyObjectify]
 	public Datastore
 	$Args;
 

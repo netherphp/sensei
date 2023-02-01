@@ -9,7 +9,7 @@ use Exception;
 use Nether\Sensei\Util;
 
 class ThemeEngine
-extends Nether\Object\Prototype {
+extends Nether\Common\Prototype {
 
 	protected Theme
 	$Theme;

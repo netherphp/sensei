@@ -5,7 +5,7 @@ namespace Nether\Sensei\Inspectors;
 use Nether;
 
 abstract class AbstractInspector
-extends Nether\Object\Prototype {
+extends Nether\Common\Prototype {
 
 	public string
 	$Name;

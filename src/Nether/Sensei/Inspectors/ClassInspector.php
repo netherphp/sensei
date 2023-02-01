@@ -7,7 +7,7 @@ use Nether\Sensei\Meta;
 
 use Exception;
 use ReflectionClass;
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 
 class ClassInspector
 extends AbstractInspector {
@@ -39,19 +39,19 @@ extends AbstractInspector {
 	public ?string
 	$Extends = NULL;
 
-	#[Nether\Object\Meta\PropertyObjectify]
+	#[Nether\Common\Meta\PropertyObjectify]
 	public Datastore
 	$Interfaces;
 
-	#[Nether\Object\Meta\PropertyObjectify]
+	#[Nether\Common\Meta\PropertyObjectify]
 	public Datastore
 	$Constants;
 
-	#[Nether\Object\Meta\PropertyObjectify]
+	#[Nether\Common\Meta\PropertyObjectify]
 	public Datastore
 	$Properties;
 
-	#[Nether\Object\Meta\PropertyObjectify]
+	#[Nether\Common\Meta\PropertyObjectify]
 	public Datastore
 	$Methods;
 

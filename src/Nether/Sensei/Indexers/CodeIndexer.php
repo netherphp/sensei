@@ -6,21 +6,21 @@ use Nether;
 
 use PhpToken;
 use SplFileInfo;
-use Nether\Object\Datastore;
-use Nether\Object\Prototype\ConstructArgs;
+use Nether\Common\Datastore;
+use Nether\Common\Prototype\ConstructArgs;
 
 class CodeIndexer
-extends Nether\Object\Prototype {
+extends Nether\Common\Prototype {
 
-	#[Nether\Object\Meta\PropertyObjectify]
+	#[Nether\Common\Meta\PropertyObjectify]
 	public Datastore
 	$Interfaces;
 
-	#[Nether\Object\Meta\PropertyObjectify]
+	#[Nether\Common\Meta\PropertyObjectify]
 	public Datastore
 	$Traits;
 
-	#[Nether\Object\Meta\PropertyObjectify]
+	#[Nether\Common\Meta\PropertyObjectify]
 	public Datastore
 	$Classes;
 

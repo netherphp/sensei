@@ -11,7 +11,7 @@ use Stringable;
 
 #[Attribute]
 abstract class VeryBusyClass
-extends Nether\Object\Prototype
+extends Nether\Common\Prototype
 implements Stringable {
 
 	const

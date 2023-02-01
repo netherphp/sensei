@@ -2,7 +2,7 @@
 
 namespace Nether\Sensei;
 
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 use Nether\Sensei\Inspectors\NamespaceInspector;
 use Nether\Sensei\Inspectors\ClassInspector;
 

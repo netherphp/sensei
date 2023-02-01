@@ -7,7 +7,7 @@ use Nether;
 use FilterIterator;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 
 #[Nether\Sensei\Meta\DateAdded('2021-09-12')]
 class FileIndexer
