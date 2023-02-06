@@ -249,21 +249,20 @@ class Util {
 			if($Iter >= count($Data))
 			break;
 
-			// full line breaks mean no sensei block.
+			if(!$Open) {
+				// full line breaks mean no sensei block.
+				if(trim($Data[$Iter]) === '')
+				break;
 
-			if(trim($Data[$Iter]) === '')
-			break;
-
-			// if we haven't started reading yet see if there is a reason
-			// we should continue reading.
-
-			if(!$Open)
-			if(preg_match('#(?:[\(\)\{\:\;\,\.])|(?:namespace|class|function)#', $Data[$Iter]))
-			$Cap++;
+				// if we haven't started reading yet see if there is a reason
+				// we should continue reading.
+				if(preg_match('#(?:[\(\)\{\:\;\,\.])|(?:namespace|class|function)#', $Data[$Iter]))
+				$Cap++;
+			}
 
 			////////
 
-			$Line = trim($Data[$Iter]);
+			$Line = trim($Data[$Iter], "\r\n");
 
 			if(preg_match('#\/\*\/\/#', $Line))
 			$Open = TRUE;
@@ -287,7 +286,7 @@ class Util {
 	string {
 
 		$Output = trim($Input, '/*');
-		$Output = trim($Output);
+		$Output = trim($Output, "\n\r ");
 
 		return $Output;
 	}
