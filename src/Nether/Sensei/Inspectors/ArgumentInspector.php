@@ -58,7 +58,7 @@ extends AbstractInspector {
 		if($Type instanceof ReflectionUnionType)
 		$this->Type = (string)$Type;
 		else
-		$this->Type = $Type ? $Type->GetName() : 'mixed';
+		$this->Type = is_object($Type) ? $Type->GetName() : 'mixed';
 
 		$this->Nullable = $Info->AllowsNull();
 		$this->Default = $Info->IsDefaultValueAvailable() ? $Info->GetDefaultValue() : NULL;

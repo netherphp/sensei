@@ -6,6 +6,7 @@ use Nether;
 use Nether\Sensei\Meta;
 
 use ReflectionProperty;
+use ReflectionNamedType;
 use Nether\Sensei\Inspectors\ClassInspector;
 
 class PropertyInspector
@@ -26,7 +27,11 @@ extends MemberInspector {
 		$this->Public = $Info->IsPublic();
 		$this->Protected = $Info->IsProtected();
 		$this->Private = $Info->IsPrivate();
-		$this->Type = $Type ? $Type->GetName() : 'mixed';
+		$this->Type = (
+			$Type instanceof ReflectionNamedType
+			? $Type->GetName()
+			: 'mixed'
+		);
 
 		if($this->Inherited === $CName)
 		$this->Inherited = NULL;

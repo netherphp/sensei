@@ -22,6 +22,9 @@ use Nether\Console\Meta\Error;
 class App
 extends Nether\Console\Client {
 
+	const
+	AppDebug = TRUE;
+
 	#[Nether\Console\Meta\Command]
 	#[Nether\Console\Meta\Toggle('--nether')]
 	public function
@@ -126,6 +129,7 @@ extends Nether\Console\Client {
 		catch(Throwable $Err) {
 			throw $Err;
 			echo $Err->GetMessage(), PHP_EOL;
+
 			return 1;
 		}
 
