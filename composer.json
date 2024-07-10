@@ -6,7 +6,7 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php":">=8.0",
-		"netherphp/common": "^5.0.5",
+		"netherphp/common": "dev-master",
 		"netherphp/console": "dev-redux",
 		"netherphp/surface": "dev-redux"
 	},
