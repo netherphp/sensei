@@ -1,0 +1,46 @@
+#!env php
+<?php ##########################################################################
+################################################################################
+
+define('AppRoot', dirname(__FILE__, 2));
+require(sprintf('%s/vendor/autoload.php', AppRoot));
+
+use Nether\Common;
+use Nether\Console;
+use Nether\Sensei;
+
+################################################################################
+################################################################################
+
+#[Console\Meta\Application('nsen', '0.0.1-dev')]
+class App
+extends Console\Client {
+
+	#[Console\Meta\Command('test-gen')]
+	#[Console\Meta\Arg('filename')]
+	#[Console\Meta\Error(1, 'file not found: %s')]
+	public function
+	HandleTestGen():
+	int {
+
+		$Filename = $this->GetInput(1);
+
+		////////
+
+		if(!file_exists($Filename))
+		$this->Quit(1, $Filename);
+
+		////////
+
+		$Tests = Sensei\TestCodeBlock::FromFile($Filename);
+		Common\Dump::Var($Tests);
+
+		return 0;
+	}
+
+};
+
+################################################################################
+################################################################################
+
+exit(App::Realboot([ 'AppRoot'=> AppRoot ]));

@@ -1,0 +1,40 @@
+{
+	"name": "netherphp/sensei",
+	"type": "library",
+	"license": "BSD-2-Clause",
+	"authors": [
+		{
+			"name": "bob",
+			"email": "bob@pegasusgate.net"
+		}
+	],
+	"config": {
+		"preferred-install": {
+			"netherphp/*": "source",
+			"*": "dist"
+		},
+		"allow-plugins": {
+			"netherphp/composer-plugin": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"require": {
+		"netherphp/common": "dev-master",
+		"phpunit/phpunit": "^11.3",
+		"netherphp/console": "dev-redux",
+		"netherphp/standards": "dev-master"
+	},
+	"bin": [
+		"bin/nsen"
+	],
+	"autoload": {
+		"psr-0": {
+			"Nether\\":"src/"
+		}
+	},
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+	}
+}
